@@ -1,7 +1,6 @@
 require 'khaleesi/version'
 require 'redcarpet'
 require 'nokogiri'
-require 'albino'
 require 'rouge'
 
 module Khaleesi
@@ -15,7 +14,6 @@ module Khaleesi
       doc = Nokogiri::HTML(html)
 
       doc.search('//pre[@lang]').each do |pre|
-        # pre.replace albino_colorize(pre.text.rstrip, pre[:lang])
         pre.replace rouge_colorize(pre.text.rstrip, pre[:lang])
       end
 
@@ -25,10 +23,6 @@ module Khaleesi
 
       # output all document as text.
       # doc.to_s
-    end
-
-    def albino_colorize(source, lang)
-      Albino.colorize(source, lang)
     end
 
     def rouge_colorize(source, lang)
