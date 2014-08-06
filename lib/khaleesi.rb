@@ -1,4 +1,3 @@
-require 'khaleesi/version'
 require 'redcarpet'
 require 'nokogiri'
 require 'rouge'
@@ -42,5 +41,10 @@ module Khaleesi
   end
 end
 
-inputfile = File.read('/Users/vince/dev/git_marked/README.md')
-puts Khaleesi.markdown(inputfile)
+def test_parse_single_file
+  file = File.read('/Users/vince/dev/git_marked/README.md')
+  Khaleesi.markdown(file)
+end
+
+# puts test_parse_single_file
+# puts Khaleesi::version

@@ -5,7 +5,7 @@ require 'khaleesi/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "khaleesi"
-  spec.version       = Khaleesi::VERSION
+  spec.version       = Khaleesi::version
   spec.authors       = ["vince-styling"]
   spec.email         = ["lingyunxiao@qq.com"]
   spec.summary       = %q{TODO: Write a short summary. Required.}
