@@ -8,9 +8,28 @@ module Khaleesi
       end
 
       def parse_page(page_file)
-        content = IO.read(page_file)
+        document = IO.read(page_file)
 
-        puts content.split(/[-]{2,}\s/)[2]
+        variables = ''
+        content = ''
+        jump = 0
+        document.each_line {|line|
+          if jump == 0
+            if line.strip == '---'
+              jump = 1
+            end
+          elsif jump == 1
+            if line.strip == '---'
+              jump = 2
+            else
+              variables.concat(line)
+            end
+          elsif jump == 2
+            content.concat(line)
+          end
+        }
+
+        puts variables
       end
     end
   end
