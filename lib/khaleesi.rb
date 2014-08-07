@@ -1,3 +1,5 @@
+require 'pathname'
+
 require 'redcarpet'
 require 'nokogiri'
 require 'rouge'
@@ -41,10 +43,8 @@ module Khaleesi
   end
 end
 
-def test_parse_single_file
-  file = File.read('/Users/vince/dev/git_marked/README.md')
-  Khaleesi.markdown(file)
+Dir[__dir__ + '/khaleesi/*.rb'].each do |file|
+  require file
 end
 
-# puts test_parse_single_file
 # puts Khaleesi::version
