@@ -6,7 +6,7 @@ require 'rouge'
 
 module Khaleesi
   class << self
-    def markdown(text)
+    def handle_markdown(text)
       options = [:fenced_code, :autolink, :no_intraemphasis, :generate_toc, :strikethrough, :gh_blockcode, :xhtml, :tables]
       syntax_highlighter(Redcarpet.new(text, *options).to_html)
     end
