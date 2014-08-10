@@ -1,39 +1,47 @@
 module Khaleesi
   class Generator
     class << self
+      @decrt_regexp
       @doc_regexp
       @var_regexp
 
       @root_dir
 
       def list_pages(root_dir)
-        @doc_regexp = /‡{3,}/
+        @decrt_regexp = /^decorator(\s*):(.+)$/
         @var_regexp = /(\p{Word}+):(\p{Word}+)/
+        @doc_regexp = /‡{3,}/
         @root_dir = root_dir
 
         Dir.glob("#{root_dir}/_pages/**/*.md") do |page_file|
           @page_file = File.expand_path(page_file)
-          parse_markdown_page
+          puts parse_markdown_page
         end
       end
 
       def parse_markdown_page
         parse_page
+        @content = Khaleesi.handle_markdown(@content)
+        parse_decorator_page(@variables, @content)
+      end
 
-        decorator = @variables[/^decorator(\s*):(.+)$/, 2]
+      def parse_decorator_page(variables, content)
+        decorator = variables[@decrt_regexp, 2] if variables
+        decorator ? parse_html_page("_decorators/#{decorator.strip}.html", content) : content
+      end
 
-        # markdown file can't stand without decorator
-        return unless decorator
-        decorator.strip!
+      def parse_html_page(sub_path, bore_content)
+        decorator = IO.read("#{@root_dir}/#{sub_path}")
 
-        decorator = IO.read("#{@root_dir}/_decorators/#{decorator}.html")
+        if decorator.index(@doc_regexp)
+          conary = decorator.split(@doc_regexp)
+          decorator_s_variables = conary[0]
+          decorator_s_content = conary[1]
+        else
+          decorator_s_content = decorator
+        end
 
-        conary = decorator.split(@doc_regexp)
-        decorator_s_variables = conary[0]
-        decorator_s_content = conary[1]
-        decorator_s_content = decorator unless decorator_s_variables
-
-        parse_text = ''
+        parsed_text = ''
         sub_script = ''
 
         decorator_s_content.each_char do |char|
@@ -44,12 +52,12 @@ module Khaleesi
             when '{'
               is_valid = sub_script.eql? '$'
               sub_script << char if is_valid
-              parse_text << char unless is_valid
+              parsed_text << char unless is_valid
 
             when ':'
               is_valid = sub_script.start_with?('${') && sub_script.length > 3
               sub_script << char if is_valid
-              parse_text << char unless is_valid
+              parsed_text << char unless is_valid
 
             when '}'
               is_valid = sub_script.start_with?('${') && sub_script.length > 4
@@ -65,15 +73,14 @@ module Khaleesi
                     case form_value
                       when 'createtime'
                         create_time = fetch_git_time('tail')
-                        parse_text << create_time
+                        parsed_text << create_time
+
                       when 'modifytime'
                         modify_time = fetch_git_time('head')
-                        parse_text << modify_time
-                      when 'identifier'
-                        puts 'identifier'
+                        parsed_text << modify_time
+
                       else
                         regexp = /^#{form_value}(\s*):(.+)$/
-                        value = ''
                         if decorator_s_variables
                           value = decorator_s_variables[regexp, 2]
                         end
@@ -81,25 +88,24 @@ module Khaleesi
                           value = @variables[regexp, 2] if @variables
                         end
 
-                        value ? parse_text << value.strip : parse_text << sub_script
+                        value ? parsed_text << value.strip : parsed_text << sub_script
                     end
 
                   when 'decorator'
                     is_valid = form_value.eql? 'content'
-                    parse_text << Khaleesi.handle_markdown(@content) if is_valid
-                    parse_text << sub_script unless is_valid
+                    is_valid ? parsed_text << bore_content : parsed_text << sub_script
 
                   when 'page'
                     puts 'todo : load page'
 
                   else
-                    parse_text << sub_script
+                    parsed_text << sub_script
                 end
 
                 sub_script.clear
 
               else
-                parse_text << char
+                parsed_text << char
               end
 
             else
@@ -107,13 +113,14 @@ module Khaleesi
               if is_valid
                 sub_script << char
               else
-                parse_text << sub_script << char
+                parsed_text << sub_script << char
                 sub_script.clear
               end
           end
         end
 
-        # puts parse_text
+        # recurse parse the decorator
+        parse_decorator_page(decorator_s_variables, parsed_text)
       end
 
       @@page_file
