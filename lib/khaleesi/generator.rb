@@ -7,24 +7,36 @@ module Khaleesi
         @doc_regexp = /‡{3,}/
         @root_dir = root_dir
 
-        Dir.glob("#{root_dir}/_pages/**/*.md") do |page_file|
+        Dir.glob("#{root_dir}/_pages/**/*") do |page_file|
           @page_file = File.expand_path(page_file)
-          puts parse_markdown_page
+          parsed_content = parse_markdown_page if page_file.end_with?('.md')
+          parsed_content = parse_html_page if page_file.end_with?('.html')
+          puts parsed_content
         end
       end
 
+      def parse_html_page
+        extract_page_structure
+        parse_decorator_file(@variables, @content)
+      end
+
       def parse_markdown_page
-        parse_page
+        extract_page_structure
+
+        decorator = @variables[@decrt_regexp, 2] if @variables
+        # markdown page can't stand without decorator
+        return @content unless decorator
+
         @content = Khaleesi.handle_markdown(@content)
-        parse_decorator_page(@variables, @content)
+        parse_decorator_file(@variables, @content)
       end
 
-      def parse_decorator_page(variables, content)
+      def parse_decorator_file(variables, content)
         decorator = variables[@decrt_regexp, 2] if variables
-        decorator ? parse_html_page("_decorators/#{decorator.strip}.html", content) : content
+        decorator ? parse_html_file("_decorators/#{decorator.strip}.html", content) : content
       end
 
-      def parse_html_page(sub_path, bore_content)
+      def parse_html_file(sub_path, bore_content)
         decorator = IO.read("#{@root_dir}/#{sub_path}")
 
         if decorator.index(@doc_regexp)
@@ -114,10 +126,10 @@ module Khaleesi
         end
 
         # recurse parse the decorator
-        parse_decorator_page(decorator_s_variables, parsed_text)
+        parse_decorator_file(decorator_s_variables, parsed_text)
       end
 
-      def parse_page
+      def extract_page_structure
         document = IO.read(@page_file)
 
         conary = document.split(@doc_regexp)
