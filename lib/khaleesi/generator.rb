@@ -1,12 +1,6 @@
 module Khaleesi
   class Generator
     class << self
-      @decrt_regexp
-      @doc_regexp
-      @var_regexp
-
-      @root_dir
-
       def list_pages(root_dir)
         @decrt_regexp = /^decorator(\s*):(.+)$/
         @var_regexp = /(\p{Word}+):(\p{Word}+)/
@@ -122,10 +116,6 @@ module Khaleesi
         # recurse parse the decorator
         parse_decorator_page(decorator_s_variables, parsed_text)
       end
-
-      @@page_file
-      @@variables
-      @@content
 
       def parse_page
         document = IO.read(@page_file)
