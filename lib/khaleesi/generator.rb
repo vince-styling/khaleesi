@@ -51,22 +51,21 @@ module Khaleesi
         sub_script = ''
 
         decorator_s_content.each_char do |char|
+          is_valid = sub_script.start_with?('${')
           case char
             when '$'
               sub_script.clear << char
 
             when '{'
               is_valid = sub_script.eql? '$'
-              sub_script << char if is_valid
-              parsed_text << char unless is_valid
+              (is_valid ? sub_script : parsed_text) << char
 
             when ':'
-              is_valid = sub_script.start_with?('${') && sub_script.length > 3
-              sub_script << char if is_valid
-              parsed_text << char unless is_valid
+              is_valid = is_valid && sub_script.length > 3
+              (is_valid ? sub_script : parsed_text) << char
 
             when '}'
-              is_valid = sub_script.start_with?('${') && sub_script.length > 4
+              is_valid = is_valid && sub_script.length > 4
               if is_valid
                 sub_script << char
 
@@ -94,12 +93,12 @@ module Khaleesi
                           value = @variables[regexp, 2] if @variables
                         end
 
-                        value ? parsed_text << value.strip : parsed_text << sub_script
+                        parsed_text << (value ? value.strip : sub_script)
                     end
 
                   when 'decorator'
                     is_valid = form_value.eql? 'content'
-                    is_valid ? parsed_text << bore_content : parsed_text << sub_script
+                    parsed_text << (is_valid ? bore_content : sub_script)
 
                   when 'page'
                     puts 'todo : load page'
@@ -115,7 +114,7 @@ module Khaleesi
               end
 
             else
-              is_valid = sub_script.start_with?('${') && char.index(/\p{Graph}/)
+              is_valid = is_valid && char.index(/\p{Graph}/)
               if is_valid
                 sub_script << char
               else
