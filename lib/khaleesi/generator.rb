@@ -2,55 +2,60 @@ module Khaleesi
   class Generator
     class << self
       def list_pages(root_dir)
-        @decrt_regexp = /^decorator(\s*):(.+)$/
+        @decrt_regexp = /^decorator(\s?):(.+)$/
         @var_regexp = /(\p{Word}+):(\p{Word}+)/
-        @doc_regexp = /‡{3,}/
+        @doc_regexp = /‡{6,}/
         @root_dir = root_dir
 
         Dir.glob("#{root_dir}/_pages/**/*") do |page_file|
           @page_file = File.expand_path(page_file)
-          parsed_content = parse_markdown_page if page_file.end_with?('.md')
-          parsed_content = parse_html_page if page_file.end_with?('.html')
+          next if File.directory? @page_file
+
+          extract_page_structure
+
+          decorator = @variables ? @variables[@decrt_regexp, 2] : nil
+          # page can't stand without decorator
+          next unless decorator
+
+          parsed_content = parse_markdown_page(decorator) if page_file.end_with? '.md', '.markdown'
+          parsed_content = parse_html_page(decorator) if page_file.end_with? '.html'
           puts parsed_content
         end
       end
 
-      def parse_html_page
-        extract_page_structure
-        parse_decorator_file(@variables, @content)
+      def parse_html_page(decorator)
+        @content = parse_html_content(nil, @content, '')
+        parse_decorator_file(decorator, @content)
       end
 
-      def parse_markdown_page
-        extract_page_structure
-
-        decorator = @variables[@decrt_regexp, 2] if @variables
-        # markdown page can't stand without decorator
-        return @content unless decorator
-
+      def parse_markdown_page(decorator)
         @content = Khaleesi.handle_markdown(@content)
-        parse_decorator_file(@variables, @content)
+        parse_decorator_file(decorator, @content)
       end
 
-      def parse_decorator_file(variables, content)
-        decorator = variables[@decrt_regexp, 2] if variables
-        decorator ? parse_html_file("_decorators/#{decorator.strip}.html", content) : content
+      def parse_decorator_file(decorator, content)
+        parse_html_file("_decorators/#{decorator.strip}.html", content)
       end
 
       def parse_html_file(sub_path, bore_content)
-        decorator = IO.read("#{@root_dir}/#{sub_path}")
+        html_content = IO.read("#{@root_dir}/#{sub_path}")
 
-        if decorator.index(@doc_regexp)
-          conary = decorator.split(@doc_regexp)
-          decorator_s_variables = conary[0]
-          decorator_s_content = conary[1]
+        if html_content.index(@doc_regexp)
+          conary = html_content.split(@doc_regexp)
+          page_s_variables = conary[0]
+          html_content = conary[1]
         else
-          decorator_s_content = decorator
+          page_s_variables = nil
         end
 
+        parse_html_content(page_s_variables, html_content, bore_content)
+      end
+
+      def parse_html_content(page_s_variables, html_content, bore_content)
         parsed_text = ''
         sub_script = ''
 
-        decorator_s_content.each_char do |char|
+        html_content.each_char do |char|
           is_valid = sub_script.start_with?('${')
           case char
             when '$'
@@ -85,9 +90,9 @@ module Khaleesi
                         parsed_text << modify_time
 
                       else
-                        regexp = /^#{form_value}(\s*):(.+)$/
-                        if decorator_s_variables
-                          value = decorator_s_variables[regexp, 2]
+                        regexp = /^#{form_value}(\s?):(.+)$/
+                        if page_s_variables
+                          value = page_s_variables[regexp, 2]
                         end
                         unless value
                           value = @variables[regexp, 2] if @variables
@@ -95,10 +100,6 @@ module Khaleesi
 
                         parsed_text << (value ? value.strip : sub_script)
                     end
-
-                  when 'decorator'
-                    is_valid = form_value.eql? 'content'
-                    parsed_text << (is_valid ? bore_content : sub_script)
 
                   when 'page'
                     puts 'todo : load page'
@@ -124,16 +125,30 @@ module Khaleesi
           end
         end
 
+        #\s?)\(\$(\p{Alpha}+)\p{Blank}:\p{Blank}\$(\p{Alpha}+)\
+        # regexp = /foreach(.+)/
+        # puts parsed_text[regexp, 1]
+        # puts parsed_text[regexp, 2]
+        # puts parsed_text
+
+        parsed_text.sub!(/\$\{decorator:content}/, bore_content)
+
         # recurse parse the decorator
-        parse_decorator_file(decorator_s_variables, parsed_text)
+        decorator = page_s_variables ? page_s_variables[@decrt_regexp, 2] : nil
+        decorator ? parse_decorator_file(decorator, parsed_text) : parsed_text
       end
 
       def extract_page_structure
         document = IO.read(@page_file)
 
-        conary = document.split(@doc_regexp)
-        @variables = conary[0].strip
-        @content = conary[1].strip
+        if document.index(@doc_regexp)
+          conary = document.split(@doc_regexp)
+          @variables = conary[0]
+          @content = conary[1]
+        else
+          @variables = nil
+          @content = document
+        end
       end
 
       def get_name
