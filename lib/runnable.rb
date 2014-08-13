@@ -9,7 +9,8 @@ end
 
 
 def test_generator
-  Khaleesi::Generator.list_pages('/Users/vince/dev/vince_blog/vincestyling.github.com/')
+  Khaleesi::Generator.list_pages(
+      '/Users/vince/dev/vince_blog/vincestyling.github.com/', '%a %e %b %H:%M %Y')
 end
 
 test_generator
