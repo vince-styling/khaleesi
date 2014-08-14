@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'fileutils'
+require 'securerandom'
+
+ROOT_DIR = Pathname.new(__FILE__).dirname.parent
+
+load ROOT_DIR.join('lib/khaleesi.rb')
+load ROOT_DIR.join('lib/khaleesi/cli.rb')
+
+Khaleesi::CLI.parse(ARGV).run
