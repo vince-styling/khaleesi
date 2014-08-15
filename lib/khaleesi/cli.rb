@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module Khaleesi
   class CLI
     def self.doc
@@ -12,6 +14,7 @@ module Khaleesi
       yield %|	produce\|p       #{Produce.desc}|
       yield %|	construction\|c  #{Construction.desc}|
       yield %|	createpost\|cp   #{CreatePost.desc}|
+      yield %|	generate\|g      #{Generate.desc}|
       yield ''
       yield 'See `khaleesi help <command>` for more info.'
     end
@@ -34,6 +37,8 @@ module Khaleesi
           Construction
         when 'createpost', 'cp'
           CreatePost
+        when 'generate', 'g'
+          Generate
         when 'version', 'v'
           Version
         when 'produce', 'p'
@@ -165,7 +170,7 @@ module Khaleesi
 
     class Construction < CLI
       def self.desc
-        'Create a site directory with whole structure at present working directory(pwd)'
+        'create a site directory with whole structure at present working directory(pwd)'
       end
 
       def self.doc
@@ -271,7 +276,7 @@ module Khaleesi
           f.puts ''
           f.puts 'Khaleesi is a static site generator that write by ruby, supported markdown parser, multiple decorators inheritance, simple page programming, page including, page dataset configurable etc.'
           f.puts ''
-          f.puts 'please check [this](https://github.com/vince-styling/Khaleesi) for more details.'
+          f.puts 'please check [this](https://github.com/vince-styling/khaleesi) for more details.'
         end
 
         post_file = create_file_p("#{pages_dir}/2014", 'netroid-introduction', 'md')
@@ -288,6 +293,102 @@ module Khaleesi
           f.puts ''
           f.puts 'please check [this](https://github.com/vince-styling/Netroid) for more details.'
         end
+      end
+    end
+
+    class Generate < CLI
+      def self.desc
+        'generate whole site for specify directory'
+      end
+
+      def self.doc
+        return enum_for(:doc) unless block_given?
+
+        yield 'usage: khaleesi generate [options...]'
+        yield ''
+        yield '--src-dir|-s <dir_path>             required, specify a source directory path(must absolutely), khaleesi shall generating via this site source.'
+        yield ''
+        yield '--dest-dir|-d <dir_path>            required, specify a destination directory path(must absolutely), all generated file will put there.'
+        yield ''
+        yield '--line-numbers|-l <line_numbers>    (true|false)enable or disable Rouge generate source code line numbers, default is false.'
+        yield ''
+        yield '--css-class|-c <css_class_name>     specify source code syntax highlight\'s css class name, default is \'highlight\'.'
+        yield ''
+        yield '--time-pattern|-t <date_pattern>    specify which date pattern you prefer, If not provided, khaleesi will use \'%a %e %b %H:%M %Y\','
+        yield '                                    see http://www.ruby-doc.org/core-2.1.2/Time.html#strftime-method for pattern details.'
+      end
+
+      def self.parse(argv)
+        opts = {
+            :src_dir => nil,
+            :dest_dir => nil,
+            :line_numbers => 'false',
+            :css_class => 'highlight',
+            :time_pattern => '%a %e %b %H:%M %Y',
+        }
+
+        until argv.empty?
+          arg = argv.shift
+          case arg
+            when '--src-dir', 's'
+              opts[:src_dir] = argv.shift.dup
+            when '--dest-dir', 'd'
+              opts[:dest_dir] = argv.shift.dup
+            when '--line-numbers', 'l'
+              opts[:line_numbers] = argv.shift.dup
+            when '--css-class', 'c'
+              opts[:css_class] = argv.shift.dup
+            when '--time-pattern', 't'
+              opts[:time_pattern] = argv.shift.dup
+          end
+        end
+
+        new(opts)
+      end
+
+      def initialize(opts={})
+        @src_dir = opts[:src_dir]
+        @dest_dir = opts[:dest_dir]
+        @line_numbers = opts[:line_numbers]
+        @css_class = opts[:css_class]
+        @time_pattern = opts[:time_pattern]
+      end
+
+      def run
+        unless @src_dir and File.directory?(@src_dir) and File.readable?(@src_dir)
+          puts "source directory : #{@src_dir} invalid!"
+          return
+        end
+
+        unless @dest_dir and File.directory?(@dest_dir) and File.writable?(@dest_dir)
+          puts "destination directory : #{@dest_dir} invalid!"
+          return
+        end
+
+        @src_dir << '/'
+        site_dir = @src_dir + '_decorators'
+        unless File.directory?(site_dir)
+          puts "source directory : #{@src_dir} haven't _decorators folder!"
+          return
+        end
+
+        site_dir = @src_dir + '_pages'
+        unless File.directory?(site_dir)
+          puts "source directory : #{@src_dir} haven't _pages folder!"
+          return
+        end
+
+        site_dir = @src_dir + '_raw'
+        unless File.directory?(site_dir)
+          puts "source directory : #{@src_dir} haven't _raw folder!"
+          return
+        end
+
+        puts "src_dir : #{@src_dir}"
+        puts "dest_dir : #{@dest_dir}"
+        puts "line_numbers : #{@line_numbers}"
+        puts "css_class : #{@css_class}"
+        puts "time_pattern : #{@time_pattern}"
       end
     end
 
