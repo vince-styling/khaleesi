@@ -4,20 +4,15 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'khaleesi/about'
 
 Gem::Specification.new do |spec|
-  spec.name          = "khaleesi"
+  spec.name          = 'khaleesi'
   spec.version       = Khaleesi::version
-  spec.authors       = ["vince-styling"]
-  spec.email         = ["lingyunxiao@qq.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
-  spec.license       = "MIT"
-
-  spec.files         = `git ls-files -z`.split("\x0")
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
-  spec.require_paths = ["lib"]
-
-  spec.add_development_dependency "bundler", "~> 1.6"
-  spec.add_development_dependency "rake"
+  spec.authors       = [Khaleesi::author]
+  spec.email         = ['lingyunxiao@qq.com']
+  spec.summary       = 'Khaleesi is a static site generator that write by ruby'
+  spec.description   = 'Khaleesi is a static site generator that write by ruby, supported markdown parser, multiple decorators inheritance, simple page programming, page including, page dataset configurable etc.'
+  spec.homepage      = 'https://github.com/vince-styling/khaleesi'
+  spec.rubyforge_project = 'khaleesi'
+  spec.files = Dir['Gemfile', 'LICENSE', 'khaleesi.gemspec', 'lib/**/*.rb', 'bin/khaleesi']
+  spec.executables = %w(khaleesi)
+  spec.license = 'MIT (see LICENSE file)'
 end
