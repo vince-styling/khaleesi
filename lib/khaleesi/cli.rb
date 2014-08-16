@@ -306,19 +306,22 @@ module Khaleesi
 
         yield 'usage: khaleesi generate [options...]'
         yield ''
-        yield '--src-dir|-s <dir_path>               required, specify a source directory path(must absolutely), khaleesi shall generating via this site source.'
+        yield '--src-dir        required, specify a source directory path(must absolutely), khaleesi shall generating via this site source.'
         yield ''
-        yield '--dest-dir|-d <dir_path>              required, specify a destination directory path(must absolutely), all generated file will put there.'
+        yield '--dest-dir       required, specify a destination directory path(must absolutely), all generated file will put there.'
         yield ''
-        yield '--line-numbers|-l <line_numbers>      (true|false)enable or disable Rouge generate source code line numbers, default is false.'
+        yield '--line-numbers   (true|false)enable or disable Rouge generate source code line numbers, default is false.'
         yield ''
-        yield '--css-class|-c <css_class_name>       specify source code syntax highlight\'s css class name, default is \'highlight\'.'
+        yield '--css-class      specify source code syntax highlight\'s css class name, default is \'highlight\'.'
         yield ''
-        yield '--time-pattern|-time <time_pattern>   specify which time pattern you prefer, If not provided, khaleesi will use \'%a %e %b %H:%M %Y\' as default,'
-        yield '                                      see http://www.ruby-doc.org/core-2.1.2/Time.html#strftime-method for pattern details.'
+        yield '--time-pattern   specify which time pattern you prefer, If not provided, khaleesi will use \'%a %e %b %H:%M %Y\' as default,'
+        yield '                 see http://www.ruby-doc.org/core-2.1.2/Time.html#strftime-method for pattern details.'
         yield ''
-        yield '--date-pattern|-date <date_pattern>   specify which date pattern you prefer, If not provided, khaleesi will use \'%F\' as default,'
-        yield '                                      see http://www.ruby-doc.org/core-2.1.2/Time.html#strftime-method for pattern details.'
+        yield '--date-pattern   specify which date pattern you prefer, If not provided, khaleesi will use \'%F\' as default,'
+        yield '                 see http://www.ruby-doc.org/core-2.1.2/Time.html#strftime-method for pattern details.'
+        yield ''
+        yield '--diff-plus      only generate local repository(git) changed but has not yet been versioning\'s pages,'
+        yield '                 this goal can be helpful when you frequently modify a page and want to see the generated effect such as writing a new blog post.'
       end
 
       def self.parse(argv)
@@ -329,23 +332,26 @@ module Khaleesi
             :css_class => 'highlight',
             :time_pattern => '%a %e %b %H:%M %Y',
             :date_pattern => '%F',
+            :diff_plus => 'false',
         }
 
         until argv.empty?
           arg = argv.shift
           case arg
-            when '--src-dir', 's'
+            when '--src-dir'
               opts[:src_dir] = argv.shift.dup
-            when '--dest-dir', 'd'
+            when '--dest-dir'
               opts[:dest_dir] = argv.shift.dup
-            when '--line-numbers', 'l'
+            when '--line-numbers'
               opts[:line_numbers] = argv.shift.dup
-            when '--css-class', 'c'
+            when '--css-class'
               opts[:css_class] = argv.shift.dup
-            when '--time-pattern', 'time'
+            when '--time-pattern'
+              opts[:time_pattern] = argv.shift.dup
+            when '--date-pattern'
               opts[:date_pattern] = argv.shift.dup
-            when '--date-pattern', 'date'
-              opts[:date_pattern] = argv.shift.dup
+            when '--diff-plus'
+              opts[:diff_plus] = argv.shift.dup
           end
         end
 
@@ -359,6 +365,7 @@ module Khaleesi
         @css_class = opts[:css_class]
         @time_pattern = opts[:time_pattern]
         @date_pattern = opts[:date_pattern]
+        @diff_plus = opts[:diff_plus]
       end
 
       def run
@@ -391,7 +398,7 @@ module Khaleesi
           return
         end
 
-        Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class, @time_pattern, @date_pattern).generate
+        Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class, @time_pattern, @date_pattern, @diff_plus).generate
         FileUtils.cp_r site_dir << '/.', @dest_dir, :verbose => true
       end
     end

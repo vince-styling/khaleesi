@@ -1,13 +1,14 @@
 module Khaleesi
   class Generator
 
-    def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern, date_pattern)
+    def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern, date_pattern, diff_plus)
       @src_dir = src_dir
       @dest_dir = dest_dir
-      @line_numbers = line_numbers
+      @line_numbers = line_numbers.eql?('true')
       @css_class = css_class
       @time_pattern = time_pattern
       @date_pattern = date_pattern
+      @diff_plus = diff_plus.eql?('true')
 
       # puts "src_dir : #{@src_dir}"
       # puts "dest_dir : #{@dest_dir}"
@@ -15,6 +16,7 @@ module Khaleesi
       # puts "css_class : #{@css_class}"
       # puts "time_pattern : #{@time_pattern}"
       # puts "date_pattern : #{@date_pattern}"
+      # puts "diff_plus : #{@diff_plus}"
     end
 
     def generate
@@ -26,7 +28,18 @@ module Khaleesi
 
       Dir.glob("#{@page_dir}/**/*") do |page_file|
         @page_file = File.expand_path(page_file)
+
         next if File.directory? @page_file
+        next unless File.readable? @page_file
+        next unless @page_file.end_with? '.md', '.html'
+
+        if @diff_plus
+          file_status = nil
+          Dir.chdir(File.expand_path('..', page_file)) do
+            file_status = %x[git status -s #{File.basename(page_file)}]
+          end
+          next unless file_status and file_status.strip.length > 2
+        end
 
         extract_page_structure
 
@@ -308,7 +321,7 @@ module Khaleesi
         lexer_class = Rouge::Lexers::PlainText
       end
 
-      formatter = Rouge::Formatters::HTML.new(css_class: @css_class, line_numbers: @line_numbers.eql?('true'))
+      formatter = Rouge::Formatters::HTML.new(css_class: @css_class, line_numbers: @line_numbers)
       formatter.format(lexer_class.new.lex(source))
     end
   end
