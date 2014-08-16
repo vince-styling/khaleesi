@@ -1,18 +1,20 @@
 module Khaleesi
   class Generator
 
-    def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern)
+    def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern, date_pattern)
       @src_dir = src_dir
       @dest_dir = dest_dir
       @line_numbers = line_numbers
       @css_class = css_class
       @time_pattern = time_pattern
+      @date_pattern = date_pattern
 
       # puts "src_dir : #{@src_dir}"
       # puts "dest_dir : #{@dest_dir}"
       # puts "line_numbers : #{@line_numbers}"
       # puts "css_class : #{@css_class}"
       # puts "time_pattern : #{@time_pattern}"
+      # puts "date_pattern : #{@date_pattern}"
     end
 
     def generate
@@ -134,9 +136,17 @@ module Khaleesi
                       create_time = Generator.fetch_create_time(page_file)
                       parsed_text << (create_time ? create_time.strftime(@time_pattern) : sub_script)
 
+                    when 'createdate'
+                      create_time = Generator.fetch_create_time(page_file)
+                      parsed_text << (create_time ? create_time.strftime(@date_pattern) : sub_script)
+
                     when 'modifytime'
                       modify_time = Generator.fetch_modify_time(page_file)
                       parsed_text << (modify_time ? modify_time.strftime(@time_pattern) : sub_script)
+
+                    when 'modifydate'
+                      modify_time = Generator.fetch_modify_time(page_file)
+                      parsed_text << (modify_time ? modify_time.strftime(@date_pattern) : sub_script)
 
                     when 'link'
                       page_link = get_link(page_file, page_s_variables)

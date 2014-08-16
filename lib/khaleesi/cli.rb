@@ -306,16 +306,19 @@ module Khaleesi
 
         yield 'usage: khaleesi generate [options...]'
         yield ''
-        yield '--src-dir|-s <dir_path>             required, specify a source directory path(must absolutely), khaleesi shall generating via this site source.'
+        yield '--src-dir|-s <dir_path>               required, specify a source directory path(must absolutely), khaleesi shall generating via this site source.'
         yield ''
-        yield '--dest-dir|-d <dir_path>            required, specify a destination directory path(must absolutely), all generated file will put there.'
+        yield '--dest-dir|-d <dir_path>              required, specify a destination directory path(must absolutely), all generated file will put there.'
         yield ''
-        yield '--line-numbers|-l <line_numbers>    (true|false)enable or disable Rouge generate source code line numbers, default is false.'
+        yield '--line-numbers|-l <line_numbers>      (true|false)enable or disable Rouge generate source code line numbers, default is false.'
         yield ''
-        yield '--css-class|-c <css_class_name>     specify source code syntax highlight\'s css class name, default is \'highlight\'.'
+        yield '--css-class|-c <css_class_name>       specify source code syntax highlight\'s css class name, default is \'highlight\'.'
         yield ''
-        yield '--time-pattern|-t <date_pattern>    specify which date pattern you prefer, If not provided, khaleesi will use \'%a %e %b %H:%M %Y\','
-        yield '                                    see http://www.ruby-doc.org/core-2.1.2/Time.html#strftime-method for pattern details.'
+        yield '--time-pattern|-time <time_pattern>   specify which time pattern you prefer, If not provided, khaleesi will use \'%a %e %b %H:%M %Y\' as default,'
+        yield '                                      see http://www.ruby-doc.org/core-2.1.2/Time.html#strftime-method for pattern details.'
+        yield ''
+        yield '--date-pattern|-date <date_pattern>   specify which date pattern you prefer, If not provided, khaleesi will use \'%F\' as default,'
+        yield '                                      see http://www.ruby-doc.org/core-2.1.2/Time.html#strftime-method for pattern details.'
       end
 
       def self.parse(argv)
@@ -325,6 +328,7 @@ module Khaleesi
             :line_numbers => 'false',
             :css_class => 'highlight',
             :time_pattern => '%a %e %b %H:%M %Y',
+            :date_pattern => '%F',
         }
 
         until argv.empty?
@@ -338,8 +342,10 @@ module Khaleesi
               opts[:line_numbers] = argv.shift.dup
             when '--css-class', 'c'
               opts[:css_class] = argv.shift.dup
-            when '--time-pattern', 't'
-              opts[:time_pattern] = argv.shift.dup
+            when '--time-pattern', 'time'
+              opts[:date_pattern] = argv.shift.dup
+            when '--date-pattern', 'date'
+              opts[:date_pattern] = argv.shift.dup
           end
         end
 
@@ -352,6 +358,7 @@ module Khaleesi
         @line_numbers = opts[:line_numbers]
         @css_class = opts[:css_class]
         @time_pattern = opts[:time_pattern]
+        @date_pattern = opts[:date_pattern]
       end
 
       def run
@@ -384,7 +391,7 @@ module Khaleesi
           return
         end
 
-        Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class, @time_pattern).generate
+        Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class, @time_pattern, @date_pattern).generate
         FileUtils.cp_r site_dir << '/.', @dest_dir, :verbose => true
       end
     end
