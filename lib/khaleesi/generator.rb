@@ -1,8 +1,6 @@
 module Khaleesi
   class Generator
 
-    attr_reader :src_dir, :dest_dir, :line_numbers, :css_class, :time_pattern
-
     def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern)
       @src_dir = src_dir
       @dest_dir = dest_dir
@@ -17,7 +15,7 @@ module Khaleesi
       # puts "time_pattern : #{@time_pattern}"
     end
 
-    def build_all
+    def generate
       @decrt_regexp = /^decorator(\p{Blank}?):(\p{Blank}?)(.+)$/
       @var_regexp = /(\p{Word}+):(\p{Word}+)/
       @doc_regexp = /‡{6,}/
@@ -36,8 +34,16 @@ module Khaleesi
 
         parsed_content = parse_markdown_page(decorator) if page_file.end_with? '.md'
         parsed_content = parse_html_page(decorator) if page_file.end_with? '.html'
+        # puts parsed_content
 
-        puts parsed_content
+        page_path = File.expand_path(@dest_dir + get_link(@page_file, @variables))
+        page_dir_path = File.dirname(page_path)
+        unless File.directory?(page_dir_path)
+          FileUtils.mkdir_p(page_dir_path)
+        end
+
+        bytes = IO.write(page_path, parsed_content)
+        puts "Done => '#{page_path}' bytes[#{bytes}]."
       end
     end
 
@@ -134,7 +140,7 @@ module Khaleesi
 
                     when 'link'
                       page_link = get_link(page_file, page_s_variables)
-                      parsed_text << (page_link ? File.expand_path(page_link) : sub_script)
+                      parsed_text << (page_link ? page_link : sub_script)
 
                     else
                       regexp = /^#{form_value}(\p{Blank}?):(.+)$/
@@ -232,11 +238,14 @@ module Khaleesi
     end
 
     def get_link(page_path, variables)
-      relative_name = page_path[/(\p{Graph}+)\/_pages(\p{Graph}+)/, 2]
-      relative_path = File.dirname(relative_name) << '/'
+      relative_loc = page_path[/(\p{Graph}+)\/_pages(\p{Graph}+)/, 2]
+      relative_path = File.dirname(relative_loc)
+      relative_path << '/' unless relative_path.end_with? '/'
 
       page_name = variables[/^slug(\p{Blank}?):(\p{Blank}?)(.+)$/, 3]
-      return relative_path << page_name unless page_name.strip.empty? if page_name
+      return File.expand_path(relative_path << page_name) unless page_name.strip.empty? if page_name
+
+      return relative_loc if relative_loc.end_with? '.html'
 
       page_name = variables[/^title(\p{Blank}?):(\p{Blank}?)(.+)$/, 3]
       page_name.gsub!(/[^\p{Alnum}\p{Blank}]/i, '')
@@ -244,7 +253,7 @@ module Khaleesi
       page_name.downcase!
       page_name.strip!
 
-      relative_path << page_name << '.html'
+      File.expand_path(relative_path << page_name << '.html')
     end
 
     def self.fetch_create_time(page_file)

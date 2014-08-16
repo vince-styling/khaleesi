@@ -384,11 +384,8 @@ module Khaleesi
           return
         end
 
-        puts "src_dir : #{@src_dir}"
-        puts "dest_dir : #{@dest_dir}"
-        puts "line_numbers : #{@line_numbers}"
-        puts "css_class : #{@css_class}"
-        puts "time_pattern : #{@time_pattern}"
+        Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class, @time_pattern).generate
+        FileUtils.cp_r site_dir << '/.', @dest_dir, :verbose => true
       end
     end
 
