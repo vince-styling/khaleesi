@@ -15,6 +15,7 @@ module Khaleesi
       yield %|	construction\|c  #{Construction.desc}|
       yield %|	createpost\|cp   #{CreatePost.desc}|
       yield %|	generate\|g      #{Generate.desc}|
+      yield %|	build\|b         #{Build.desc}|
       yield ''
       yield 'See `khaleesi help <command>` for more info.'
     end
@@ -43,6 +44,8 @@ module Khaleesi
           Version
         when 'produce', 'p'
           Produce
+        when 'build', 'b'
+          Build
         when 'help', 'h'
           Help
         else
@@ -297,14 +300,15 @@ module Khaleesi
     end
 
     class Generate < CLI
+      @cmd_name = 'generate'
       def self.desc
-        'generate whole site for specify directory'
+        "#{@cmd_name} whole site for specify directory"
       end
 
       def self.doc
         return enum_for(:doc) unless block_given?
 
-        yield 'usage: khaleesi generate [options...]'
+        yield "usage: khaleesi #{@cmd_name} [options...]"
         yield ''
         yield '--src-dir        required, specify a source directory path(must absolutely), khaleesi shall generating via this site source.'
         yield ''
@@ -399,7 +403,22 @@ module Khaleesi
         end
 
         Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class, @time_pattern, @date_pattern, @diff_plus).generate
-        FileUtils.cp_r site_dir << '/.', @dest_dir, :verbose => true
+        handle_raw_files(site_dir)
+      end
+
+      def handle_raw_files(raw_dir)
+        # make symbolic links of "_raw" directory
+        Dir.chdir(@dest_dir) do
+          %x[ln -sf #{raw_dir << '/*'} .]
+        end
+        # FileUtils.ln_s site_dir << '/*', @dest_dir, :verbose => true
+      end
+    end
+
+    class Build < Generate
+      @cmd_name = 'build'
+      def handle_raw_files(raw_dir)
+        FileUtils.cp_r raw_dir << '/.', @dest_dir, :verbose => false
       end
     end
 
