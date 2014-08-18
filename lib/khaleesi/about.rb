@@ -6,7 +6,7 @@ module Khaleesi
     'vince styling'
   end
   def self.site
-    'https://github.com/vince-styling/Khaleesi'
+    'https://github.com/vince-styling/khaleesi'
   end
   def self.about
     puts 'Khaleesi is a site blog generator write by ruby.'
