@@ -2,7 +2,5 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'redcarpet', '1.17.2'
-gem 'nokogiri'
-
-gem 'rouge'
+gem 'redcarpet', '3.1.2'
+gem 'rouge', '1.6.1'

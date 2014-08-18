@@ -4,16 +4,16 @@ module Khaleesi
     def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern, date_pattern, diff_plus)
       @src_dir = src_dir
       @dest_dir = dest_dir
-      @line_numbers = line_numbers.eql?('true')
-      @css_class = css_class
+      $line_numbers = line_numbers.eql?('true')
+      $css_class = css_class
       @time_pattern = time_pattern
       @date_pattern = date_pattern
       @diff_plus = diff_plus.eql?('true')
 
       # puts "src_dir : #{@src_dir}"
       # puts "dest_dir : #{@dest_dir}"
-      # puts "line_numbers : #{@line_numbers}"
-      # puts "css_class : #{@css_class}"
+      # puts "line_numbers : #{$line_numbers}"
+      # puts "css_class : #{$css_class}"
       # puts "time_pattern : #{@time_pattern}"
       # puts "date_pattern : #{@date_pattern}"
       # puts "diff_plus : #{@diff_plus}"
@@ -294,35 +294,26 @@ module Khaleesi
       end
     end
 
+    class HTML < Redcarpet::Render::HTML
+      include Rouge::Plugins::Redcarpet
+      def rouge_formatter(opts=nil)
+        css_class = opts.fetch(:css_class) if opts
+        lexer_tag = css_class[/highlight (\S+)/, 1] if css_class
+        lexer_tag ? lexer_tag.prepend(' ') : lexer_tag = ''
+        super :css_class => $css_class + lexer_tag, :line_numbers => $line_numbers
+      end
+
+      def initialize(opts={})
+        # opts.store(:with_toc_data, true)
+        # opts.store(:prettify, true)
+        opts.store(:xhtml, true)
+        super
+      end
+    end
+
     def handle_markdown(text)
-      options = [:fenced_code, :autolink, :no_intraemphasis, :generate_toc, :strikethrough, :gh_blockcode, :xhtml, :tables]
-      syntax_highlighter(Redcarpet.new(text, *options).to_html)
-    end
-
-    def syntax_highlighter(html)
-      doc = Nokogiri::HTML(html)
-
-      doc.search('//pre[@lang]').each do |pre|
-        pre.replace rouge_colorize(pre.text.rstrip, pre[:lang])
-      end
-
-      # avaliable fields like .inner_html at http://nokogiri.org/Nokogiri/XML/Node.html
-      # fetch the body elements.
-      doc.at('body').inner_html
-    end
-
-    def rouge_colorize(source, lang)
-      # find the correct lexer class by given name.
-      # avaliable language : http://rubydoc.info/gems/rouge/Rouge/Lexers
-      lexer_class = Rouge::Lexer.find(lang)
-      unless lexer_class
-        warn "WARNING : lexer_class[#{lang}] not match."
-        # puts Rouge::Lexer.find_fancy('guess', source)
-        lexer_class = Rouge::Lexers::PlainText
-      end
-
-      formatter = Rouge::Formatters::HTML.new(css_class: @css_class, line_numbers: @line_numbers)
-      formatter.format(lexer_class.new.lex(source))
+      markdown = Redcarpet::Markdown.new(HTML, fenced_code_blocks: true, autolink: true, no_intra_emphasis: true, strikethrough: true, tables: true)
+      markdown.render(text)
     end
   end
 
