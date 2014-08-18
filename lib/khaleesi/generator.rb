@@ -206,14 +206,10 @@ module Khaleesi
 
     def handle_foreach_snippet(foreach_snippet)
       var_name = foreach_snippet[2]
-      dir_name = foreach_snippet[3]
       loop_body = foreach_snippet[4]
+      dir_name = foreach_snippet[3].prepend(@page_dir)
 
-      dir_name.prepend('posts/') unless dir_name.eql? 'posts'
-      dir_name << '/'
-      dir_name.prepend(@page_dir)
-
-      return nil unless File.exists? dir_name
+      return nil unless Dir.exists? dir_name
 
       page_ary = Array.new
       Dir.glob("#{dir_name}/**/*") do |page_file|
