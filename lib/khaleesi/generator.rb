@@ -20,7 +20,8 @@ module Khaleesi
     end
 
     def generate
-      @decrt_regexp = /^decorator(\p{Blank}?):(\p{Blank}?)(.+)$/
+      @decrt_regexp = produce_variable_regex('decorator')
+      @title_regexp = produce_variable_regex('title')
       @var_regexp = /(\p{Word}+):(\p{Word}+)/
       @doc_regexp = /‡{6,}/
 
@@ -46,6 +47,10 @@ module Khaleesi
         decorator = @variables ? @variables[@decrt_regexp, 3] : nil
         # page can't stand without decorator
         next unless decorator
+
+        # isn't legal page if title missing
+        title = @variables[@title_regexp, 3]
+        next unless title
 
         parsed_content = parse_markdown_page(decorator) if page_file.end_with? '.md'
         parsed_content = parse_html_page(decorator) if page_file.end_with? '.html'
@@ -257,16 +262,20 @@ module Khaleesi
     end
 
     def get_link(page_path, variables)
+      # only generate link for title-present page
+      title = variables[@title_regexp, 3] if variables
+      return nil unless title
+
       relative_loc = page_path[/(\p{Graph}+)\/_pages(\p{Graph}+)/, 2]
       relative_path = File.dirname(relative_loc)
       relative_path << '/' unless relative_path.end_with? '/'
 
-      page_name = variables[/^slug(\p{Blank}?):(\p{Blank}?)(.+)$/, 3]
+      page_name = variables[produce_variable_regex('slug'), 3]
       return File.expand_path(relative_path << page_name) unless page_name.strip.empty? if page_name
 
       return relative_loc if relative_loc.end_with? '.html'
 
-      page_name = variables[/^title(\p{Blank}?):(\p{Blank}?)(.+)$/, 3]
+      page_name = title
       page_name.gsub!(/[^\p{Alnum}\p{Blank}]/i, '')
       page_name.gsub!(/\p{Blank}/, '-')
       page_name.downcase!
@@ -310,6 +319,10 @@ module Khaleesi
     def handle_markdown(text)
       markdown = Redcarpet::Markdown.new(HTML, fenced_code_blocks: true, autolink: true, no_intra_emphasis: true, strikethrough: true, tables: true)
       markdown.render(text)
+    end
+
+    def produce_variable_regex(var_name)
+      /^#{var_name}(\p{Blank}?):(\p{Blank}?)(.+)$/
     end
   end
 
