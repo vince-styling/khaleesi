@@ -52,8 +52,8 @@ module Khaleesi
         title = @variables[@title_regexp, 3]
         next unless title
 
-        parsed_content = parse_markdown_page(decorator) if page_file.end_with? '.md'
-        parsed_content = parse_html_page(decorator) if page_file.end_with? '.html'
+        @content = page_file.end_with?('.md') ? handle_markdown(@content) : parse_html_content(nil, @content, '')
+        parsed_content = parse_decorator_file(decorator, @content)
         # puts parsed_content
 
         page_path = File.expand_path(@dest_dir + get_link(@page_file, @variables))
@@ -67,32 +67,38 @@ module Khaleesi
       end
     end
 
-    def parse_html_page(decorator)
-      @content = parse_html_content(nil, @content, '')
-      parse_decorator_file(decorator, @content)
-    end
+    def parse_markdown_file(file_path)
+      file_content = IO.read(file_path)
 
-    def parse_markdown_page(decorator)
-      @content = handle_markdown(@content)
-      parse_decorator_file(decorator, @content)
-    end
-
-    def parse_decorator_file(decorator, content)
-      parse_html_file("_decorators/#{decorator}.html", content)
-    end
-
-    def parse_html_file(sub_path, bore_content)
-      html_content = IO.read("#{@src_dir}/#{sub_path}")
-
-      if html_content.index(@doc_regexp)
-        conary = html_content.split(@doc_regexp)
+      if file_content.index(@doc_regexp)
+        conary = file_content.split(@doc_regexp)
         page_s_variables = conary[0]
-        html_content = conary[1]
+        file_content = conary[1]
       else
         page_s_variables = nil
       end
 
-      parse_html_content(page_s_variables, html_content, bore_content)
+      file_content = handle_markdown(file_content)
+      decorator = page_s_variables ? page_s_variables[@decrt_regexp, 3] : nil
+      decorator ? parse_decorator_file(decorator, file_content) : file_content
+    end
+
+    def parse_decorator_file(decorator, content)
+      parse_html_file("#{@src_dir}/_decorators/#{decorator}.html", content)
+    end
+
+    def parse_html_file(file_path, bore_content)
+      file_content = IO.read(file_path)
+
+      if file_content.index(@doc_regexp)
+        conary = file_content.split(@doc_regexp)
+        page_s_variables = conary[0]
+        file_content = conary[1]
+      else
+        page_s_variables = nil
+      end
+
+      parse_html_content(page_s_variables, file_content, bore_content)
     end
 
     def parse_html_content(page_s_variables, html_content, bore_content)
@@ -183,7 +189,19 @@ module Khaleesi
                   end
 
                 when 'page'
-                  puts 'todo : load page'
+                  inner_content = nil
+
+                  Dir.glob("#{@page_dir}/**/#{form_value}.md") do |inner_page|
+                    inner_content = parse_markdown_file(inner_page)
+                  end
+
+                  unless inner_content
+                    Dir.glob("#{@page_dir}/**/#{form_value}.html") do |inner_page|
+                      inner_content = parse_html_file(inner_page)
+                    end
+                  end
+
+                  parsed_text << (inner_content ? inner_content : sub_script)
 
                 else
                   parsed_text << sub_script
