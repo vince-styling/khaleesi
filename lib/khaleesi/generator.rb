@@ -27,7 +27,10 @@ module Khaleesi
 
       @page_dir = "#{@src_dir}/_pages/"
 
+      start_time = Time.now
+
       Dir.glob("#{@page_dir}/**/*") do |page_file|
+        process_start_time = Time.now
         @page_file = File.expand_path(page_file)
 
         next if File.directory? @page_file
@@ -63,8 +66,10 @@ module Khaleesi
         end
 
         bytes = IO.write(page_path, parsed_content)
-        puts "Done => '#{page_path}' bytes[#{bytes}]."
+        puts "Done (#{humanize(Time.now - process_start_time)}) => '#{page_path}' bytes[#{bytes}]."
       end
+
+      puts "Generator time elapsed : #{humanize(Time.now - start_time)}."
     end
 
     def parse_markdown_file(file_path)
@@ -341,6 +346,16 @@ module Khaleesi
 
     def produce_variable_regex(var_name)
       /^#{var_name}(\p{Blank}?):(\p{Blank}?)(.+)$/
+    end
+
+    def humanize(secs) # http://stackoverflow.com/a/4136485/1294681
+      secs = secs * 1000
+      [[1000, :milliseconds], [60, :seconds], [60, :minutes]].map { |count, name|
+        if secs > 0
+          secs, n = secs.divmod(count)
+          n.to_i > 0 ? "#{n.to_i} #{name}" : ''
+        end
+      }.compact.reverse.join(' ').strip
     end
   end
 
