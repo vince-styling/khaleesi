@@ -35,7 +35,7 @@ module Khaleesi
 
         next if File.directory? @page_file
         next unless File.readable? @page_file
-        next unless @page_file.end_with? '.md', '.html'
+        next unless is_valid_file(@page_file)
 
         if @diff_plus
           file_status = nil
@@ -55,7 +55,7 @@ module Khaleesi
         title = @variables[@title_regexp, 3]
         next unless title
 
-        @content = page_file.end_with?('.md') ? handle_markdown(@content) : parse_html_content(nil, @content, '')
+        @content = is_markdown_file(page_file) ? handle_markdown(@content) : parse_html_content(nil, @content, '')
         parsed_content = parse_decorator_file(decorator, @content)
         # puts parsed_content
 
@@ -194,17 +194,14 @@ module Khaleesi
                   end
 
                 when 'page'
-                  inner_content = nil
-
-                  Dir.glob("#{@page_dir}/**/#{form_value}.md") do |inner_page|
-                    inner_content = parse_markdown_file(inner_page)
+                  match_page = nil
+                  Dir.glob("#{@page_dir}/**/#{form_value}.*") do |inner_page|
+                    match_page = inner_page
+                    break
                   end
 
-                  unless inner_content
-                    Dir.glob("#{@page_dir}/**/#{form_value}.html") do |inner_page|
-                      inner_content = parse_html_file(inner_page)
-                    end
-                  end
+                  inner_content = parse_html_file(match_page) if is_html_file(match_page)
+                  inner_content = parse_markdown_file(match_page) if is_markdown_file(match_page)
 
                   parsed_text << (inner_content ? inner_content : sub_script)
 
@@ -242,8 +239,7 @@ module Khaleesi
       page_ary = Array.new
       Dir.glob("#{dir_name}/**/*") do |page_file|
         page_file = File.expand_path(page_file)
-        next if File.directory? page_file
-        next unless page_file.end_with? '.md', '.html'
+        next unless is_valid_file(page_file)
 
         document = IO.read(page_file)
 
@@ -296,7 +292,7 @@ module Khaleesi
       page_name = variables[produce_variable_regex('slug'), 3]
       return File.expand_path(relative_path << page_name) unless page_name.strip.empty? if page_name
 
-      return relative_loc if relative_loc.end_with? '.html'
+      return relative_loc if is_html_file(relative_loc)
 
       page_name = title
       page_name.gsub!(/[^\p{Alnum}\p{Blank}]/i, '')
@@ -348,6 +344,18 @@ module Khaleesi
       /^#{var_name}(\p{Blank}?):(\p{Blank}?)(.+)$/
     end
 
+    def is_valid_file(file_path)
+      is_markdown_file(file_path) or is_html_file(file_path)
+    end
+
+    def is_markdown_file(file_path)
+      file_path and file_path.end_with? '.md'
+    end
+
+    def is_html_file(file_path)
+      file_path and file_path.end_with? '.html'
+    end
+
     def humanize(secs) # http://stackoverflow.com/a/4136485/1294681
       secs = secs * 1000
       [[1000, :milliseconds], [60, :seconds], [60, :minutes]].map { |count, name|
@@ -355,7 +363,7 @@ module Khaleesi
           secs, n = secs.divmod(count)
           n.to_i > 0 ? "#{n.to_i} #{name}" : ''
         end
-      }.compact.reverse.join(' ').strip
+      }.compact.reverse.join(' ').squeeze(' ').strip
     end
   end
 
