@@ -25,17 +25,16 @@ module Khaleesi
       @var_regexp = /(\p{Word}+):(\p{Word}+)/
       @doc_regexp = /‡{6,}/
 
+      @variable_stack = Array.new
+
       @page_dir = "#{@src_dir}/_pages/"
 
       start_time = Time.now
 
       Dir.glob("#{@page_dir}/**/*") do |page_file|
+        next unless File.readable? page_file
+        next unless is_valid_file page_file
         process_start_time = Time.now
-        @page_file = File.expand_path(page_file)
-
-        next if File.directory? @page_file
-        next unless File.readable? @page_file
-        next unless is_valid_file(@page_file)
 
         if @diff_plus
           file_status = nil
@@ -45,27 +44,24 @@ module Khaleesi
           next unless file_status and file_status.strip.length > 2
         end
 
-        extract_page_structure
+        extract_page_structure(page_file)
 
-        decorator = @variables ? @variables[@decrt_regexp, 3] : nil
+        variables = @variable_stack.pop
         # page can't stand without decorator
-        next unless decorator
+        next unless variables and variables[@decrt_regexp, 3]
 
         # isn't legal page if title missing
-        title = @variables[@title_regexp, 3]
-        next unless title
+        next unless variables[@title_regexp, 3]
 
-        @content = is_markdown_file(page_file) ? handle_markdown(@content) : parse_html_content(nil, @content, '')
-        parsed_content = parse_decorator_file(decorator, @content)
-        # puts parsed_content
+        content = is_html_file(page_file) ? parse_html_file(page_file, '') : parse_markdown_file(page_file)
 
-        page_path = File.expand_path(@dest_dir + get_link(@page_file, @variables))
+        page_path = File.expand_path(@dest_dir + get_link(page_file, variables))
         page_dir_path = File.dirname(page_path)
         unless File.directory?(page_dir_path)
           FileUtils.mkdir_p(page_dir_path)
         end
 
-        bytes = IO.write(page_path, parsed_content)
+        bytes = IO.write(page_path, content)
         puts "Done (#{humanize(Time.now - process_start_time)}) => '#{page_path}' bytes[#{bytes}]."
       end
 
@@ -73,41 +69,30 @@ module Khaleesi
     end
 
     def parse_markdown_file(file_path)
-      file_content = IO.read(file_path)
-
-      if file_content.index(@doc_regexp)
-        conary = file_content.split(@doc_regexp)
-        page_s_variables = conary[0]
-        file_content = conary[1]
-      else
-        page_s_variables = nil
-      end
-
-      file_content = handle_markdown(file_content)
-      decorator = page_s_variables ? page_s_variables[@decrt_regexp, 3] : nil
-      decorator ? parse_decorator_file(decorator, file_content) : file_content
+      content = extract_page_structure(file_path)
+      content = parse_decorator_file(handle_markdown(content))
+      @variable_stack.pop
+      content
     end
 
-    def parse_decorator_file(decorator, content)
-      parse_html_file("#{@src_dir}/_decorators/#{decorator}.html", content)
+    def parse_decorator_file(bore_content)
+      variables = @variable_stack.last
+      decorator = variables ? variables[@decrt_regexp, 3] : nil
+      decorator ? parse_html_file("#{@src_dir}/_decorators/#{decorator.strip}.html", bore_content) : bore_content
     end
 
     def parse_html_file(file_path, bore_content)
-      file_content = IO.read(file_path)
+      content = extract_page_structure(file_path)
 
-      if file_content.index(@doc_regexp)
-        conary = file_content.split(@doc_regexp)
-        page_s_variables = conary[0]
-        file_content = conary[1]
-      else
-        page_s_variables = nil
-      end
+      content = parse_html_content(file_path, content, bore_content)
+      content = parse_decorator_file(content) # recurse parse
 
-      parse_html_content(page_s_variables, file_content, bore_content)
+      @variable_stack.pop
+      content
     end
 
-    def parse_html_content(page_s_variables, html_content, bore_content)
-      parsed_text = handle_html_content(@page_file, page_s_variables, html_content, '')
+    def parse_html_content(page_file, html_content, bore_content)
+      parsed_text = handle_html_content(page_file, html_content, '')
 
 
       # http://www.ruby-doc.org/core-2.1.0/Regexp.html#class-Regexp-label-Repetition use '.+?' to disable greedy match.
@@ -125,13 +110,10 @@ module Khaleesi
 
       parsed_text.sub!(/\$\{decorator:content}/, bore_content)
 
-
-      # recurse parse the decorator
-      decorator = page_s_variables ? page_s_variables[@decrt_regexp, 3] : nil
-      decorator ? parse_decorator_file(decorator, parsed_text) : parsed_text
+      parsed_text
     end
 
-    def handle_html_content(page_file, page_s_variables, html_content, added_scope)
+    def handle_html_content(page_file, html_content, added_scope)
       parsed_text = ''
       sub_script = ''
 
@@ -178,19 +160,26 @@ module Khaleesi
                       parsed_text << (modify_time ? modify_time.strftime(@date_pattern) : sub_script)
 
                     when 'link'
-                      page_link = get_link(page_file, page_s_variables)
+                      page_link = get_link(page_file, @variable_stack.last)
                       parsed_text << (page_link ? page_link : sub_script)
 
                     else
-                      regexp = /^#{form_value}(\p{Blank}?):(.+)$/
-                      if page_s_variables
-                        value = page_s_variables[regexp, 2]
-                      end
-                      unless value
-                        value = @variables[regexp, 2] if @variables
+                      text = nil
+                      if form_value.eql?('content') and form_scope.eql?(added_scope)
+                        text = parse_html_file(page_file) if is_html_file(page_file)
+                        text = parse_markdown_file(page_file) if is_markdown_file(page_file)
+
+                      else
+                        regexp = /^#{form_value}(\p{Blank}?):(.+)$/
+                        @variable_stack.reverse_each do |var|
+                          text = var[regexp, 2] if var
+                          break if text
+                        end
+
                       end
 
-                      parsed_text << (value ? value.strip : sub_script)
+                      parsed_text << (text ? text.strip : sub_script)
+
                   end
 
                 when 'page'
@@ -200,10 +189,10 @@ module Khaleesi
                     break
                   end
 
-                  inner_content = parse_html_file(match_page) if is_html_file(match_page)
-                  inner_content = parse_markdown_file(match_page) if is_markdown_file(match_page)
+                  inc_content = parse_html_file(match_page) if is_html_file(match_page)
+                  inc_content = parse_markdown_file(match_page) if is_markdown_file(match_page)
 
-                  parsed_text << (inner_content ? inner_content : sub_script)
+                  parsed_text << (inc_content ? inc_content : sub_script)
 
                 else
                   parsed_text << sub_script
@@ -234,21 +223,15 @@ module Khaleesi
       loop_body = foreach_snippet[4]
       dir_name = foreach_snippet[3].prepend(@page_dir)
 
-      return nil unless Dir.exists? dir_name
+      return unless Dir.exists? dir_name
 
       page_ary = Array.new
       Dir.glob("#{dir_name}/**/*") do |page_file|
         page_file = File.expand_path(page_file)
         next unless is_valid_file(page_file)
 
-        document = IO.read(page_file)
-
-        next unless document.index(@doc_regexp)
-
-        page_variables = document.split(@doc_regexp)[0].strip
-        next if page_variables.empty?
-
-        page_ary.push Page.new(page_file, page_variables)
+        extract_page_structure(page_file)
+        page_ary.push Page.new(page_file, @variable_stack.pop)
       end
 
       page_ary.sort! do |left, right|
@@ -257,33 +240,34 @@ module Khaleesi
 
       body_content = ''
       page_ary.each do |page|
-        page_snippet = handle_html_content(
-            page.instance_variable_get(:@page_file),
-            page.instance_variable_get(:@page_variables),
-            loop_body, var_name)
-        body_content << page_snippet
+        @variable_stack.push(page.instance_variable_get(:@page_variables))
+
+        body_content << handle_html_content(
+            page.instance_variable_get(:@page_file), loop_body, var_name)
+
+        @variable_stack.pop
       end
 
-      body_content.empty? ? nil : body_content
+      body_content unless body_content.empty?
     end
 
-    def extract_page_structure
-      document = IO.read(@page_file)
+    def extract_page_structure(page_file)
+      document = IO.read(page_file)
 
       if document.index(@doc_regexp)
         conary = document.split(@doc_regexp)
-        @variables = conary[0]
-        @content = conary[1]
+        @variable_stack.push(conary[0])
+        conary[1]
       else
-        @variables = nil
-        @content = document
+        @variable_stack.push(nil)
+        document
       end
     end
 
     def get_link(page_path, variables)
       # only generate link for title-present page
       title = variables[@title_regexp, 3] if variables
-      return nil unless title
+      return unless title
 
       relative_loc = page_path[/(\p{Graph}+)\/_pages(\p{Graph}+)/, 2]
       relative_path = File.dirname(relative_loc)
@@ -372,8 +356,8 @@ module Khaleesi
     @page_variables
 
     def initialize(page_file, page_variables)
-      @page_file =  page_file
       @page_variables = page_variables
+      @page_file = page_file
     end
 
     def <=> (other)
