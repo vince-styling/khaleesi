@@ -1,0 +1,12 @@
+title: Demonstraction of Khaleesi
+decorator: basic
+‡‡‡‡‡‡‡‡‡‡‡‡‡‡
+<h1>geek highlighter markdown decorator is “Khaleesi”</h1>
+<h2>
+    <span>{</span>
+    Which theme is your favorite?
+    <span>}</span>
+</h2>
+#foreach ($theme : $themes_illustrates)
+    ${theme:content}
+#end
