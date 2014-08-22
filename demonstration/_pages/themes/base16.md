@@ -1,6 +1,7 @@
 title: base16
 decorator: theme
 actually_name: base16
+sequence: 8
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
 
 ```css

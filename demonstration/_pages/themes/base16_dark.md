@@ -1,6 +1,7 @@
 title: base16_dark
 decorator: theme
 actually_name: base16.dark
+sequence: 9
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
 
 ```css

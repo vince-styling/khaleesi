@@ -1,6 +1,7 @@
 title: thankful_eyes
 decorator: theme
 actually_name: thankful_eyes
+sequence: 6
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
 
 ```css

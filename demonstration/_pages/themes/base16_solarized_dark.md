@@ -1,6 +1,7 @@
 title: base16_solarized_dark
 decorator: theme
 actually_name: base16.solarized.dark
+sequence: 3
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
 
 ```css

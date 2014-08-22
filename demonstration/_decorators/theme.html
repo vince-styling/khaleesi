@@ -12,4 +12,13 @@ rougify <span class="nb">help </span>style
 <span class="c"># output particular theme's css :</span>
 rougify style ${variable:actually_name} --scope<span class="o">=</span>.your_root_css<span class="se">\ </span>.your_branch_css<span class="se">\ </span>.highlight
 </code></pre>
+<div></div>
+<div class="chain_snippet clearfix">
+    #if chain:prev($theme)
+        <div class="prev">Prev Theme : <a href="${theme:link}">${theme:title}</a></div>
+    #end
+    #if chain:next($theme)
+        <div class="next">Next Theme : <a href="${theme:link}">${theme:title}</a></div>
+    #end
+</div>
 </div>

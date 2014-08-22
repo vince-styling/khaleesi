@@ -116,6 +116,18 @@ p {
     padding: 12px;
 }
 
+.theme .chain_snippet {
+    padding: 0 10px 20px 10px;
+}
+
+.theme .chain_snippet .prev {
+    float: left;
+}
+
+.theme .chain_snippet .next {
+    float: right;
+}
+
 .theme-tabs {
     margin-bottom: 20px
 }

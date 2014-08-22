@@ -1,6 +1,7 @@
 title: monokai_sublime
 decorator: theme
 actually_name: monokai.sublime
+sequence: 4
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
 
 ```css

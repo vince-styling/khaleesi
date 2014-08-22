@@ -1,6 +1,7 @@
 title: monokai
 decorator: theme
 actually_name: monokai
+sequence: 5
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
 
 ```css

@@ -1,6 +1,7 @@
 title: colorful
 decorator: theme
 actually_name: colorful
+sequence: 7
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
 
 ```css

@@ -1,6 +1,7 @@
 title: github
 decorator: theme
 actually_name: github
+sequence: 1
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
 
 ```css

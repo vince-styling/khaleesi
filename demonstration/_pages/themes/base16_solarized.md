@@ -1,6 +1,7 @@
 title: base16_solarized
 decorator: theme
 actually_name: base16.solarized
+sequence: 2
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
 
 ```css
