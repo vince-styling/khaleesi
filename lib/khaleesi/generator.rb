@@ -84,7 +84,7 @@ module Khaleesi
     def parse_html_file(file_path, bore_content)
       content = extract_page_structure(file_path)
 
-      content = parse_html_content(file_path, content, bore_content)
+      content = parse_html_content(file_path, content.to_s, bore_content)
       content = parse_decorator_file(content) # recurse parse
 
       @variable_stack.pop
@@ -96,12 +96,12 @@ module Khaleesi
 
 
       # http://www.ruby-doc.org/core-2.1.0/Regexp.html#class-Regexp-label-Repetition use '.+?' to disable greedy match.
-      regexp = /(#foreach\p{Blank}?\(\$(\p{Alpha}+)\p{Blank}?:\p{Blank}?\$(\p{Alpha}+)\)(.+?)#end)\n/m
-      while true
-        foreach_snippet = parsed_text.match(regexp)
-        break unless foreach_snippet
-
+      regexp = /(#foreach\p{Blank}?\(\$(\p{Graph}+)\p{Blank}?:\p{Blank}?\$(\p{Graph}+)\)(.+?)#end)/m
+      while (foreach_snippet = parsed_text.match(regexp))
         foreach_snippet = handle_foreach_snippet(foreach_snippet)
+
+        # because the Regexp cannot skip a unhandled foreach snippet,
+        # so we claim every snippet must successful before we do next.
         break unless foreach_snippet
 
         parsed_text.sub!(regexp, foreach_snippet)
@@ -166,7 +166,7 @@ module Khaleesi
                     else
                       text = nil
                       if form_value.eql?('content') and form_scope.eql?(added_scope)
-                        text = parse_html_file(page_file) if is_html_file(page_file)
+                        text = parse_html_file(page_file, '') if is_html_file(page_file)
                         text = parse_markdown_file(page_file) if is_markdown_file(page_file)
 
                       else
@@ -279,7 +279,7 @@ module Khaleesi
       return relative_loc if is_html_file(relative_loc)
 
       page_name = title
-      page_name.gsub!(/[^\p{Alnum}\p{Blank}]/i, '')
+      page_name.gsub!(/[^\p{Alnum}\p{Blank}_]/i, '')
       page_name.gsub!(/\p{Blank}/, '-')
       page_name.downcase!
       page_name.strip!
@@ -298,7 +298,7 @@ module Khaleesi
     def self.fetch_git_time(page_file, cmd)
       Dir.chdir(File.expand_path('..', page_file)) do
         create_time = %x[git log --date=iso --pretty='%cd' #{File.basename(page_file)} | #{cmd} -1]
-        Time.parse(create_time)
+        create_time.to_s.strip.empty? ? Time.now : Time.parse(create_time)
       end
     end
 
@@ -320,6 +320,7 @@ module Khaleesi
     end
 
     def handle_markdown(text)
+      return '' if text.to_s.empty?
       markdown = Redcarpet::Markdown.new(HTML, fenced_code_blocks: true, autolink: true, no_intra_emphasis: true, strikethrough: true, tables: true)
       markdown.render(text)
     end
@@ -363,18 +364,18 @@ module Khaleesi
     def <=> (other)
       regexp = /^sequence(\p{Blank}?):(\p{Blank}?)(\d+)$/
 
-      self_sequence = @page_variables[regexp, 3]
-      other_sequence = other.instance_variable_get(:@page_variables)[regexp, 3]
-      # puts "self : #{self_sequence} - other : #{other_sequence}"
+      self_sequence = @page_variables[regexp, 3] if @page_variables
+      o_variables = other.instance_variable_get(:@page_variables)
+      other_sequence = o_variables[regexp, 3] if o_variables
 
       # if which one specify sequence, we shall force comparing by sequence.
       if self_sequence || other_sequence
         self_sequence = 0 unless self_sequence
         other_sequence = 0 unless other_sequence
 
-        return -1 if self_sequence.to_i < other_sequence.to_i
+        return 1 if self_sequence.to_i < other_sequence.to_i
         return 0 if self_sequence.to_i == other_sequence.to_i
-        return 1 if self_sequence.to_i > other_sequence.to_i
+        return -1 if self_sequence.to_i > other_sequence.to_i
       end
 
 
