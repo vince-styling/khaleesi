@@ -25,16 +25,16 @@ module Khaleesi
       @var_regexp = /(\p{Word}+):(\p{Word}+)/
       @doc_regexp = /‡{6,}/
 
-      @variable_stack = Array.new
-
       @page_dir = "#{@src_dir}/_pages/"
-
+      @variable_stack = Array.new
       start_time = Time.now
 
       Dir.glob("#{@page_dir}/**/*") do |page_file|
         next unless File.readable? page_file
         next unless is_valid_file page_file
-        process_start_time = Time.now
+
+        @building_page = File.expand_path(page_file)
+        single_start_time = Time.now
 
         if @diff_plus
           file_status = nil
@@ -62,10 +62,10 @@ module Khaleesi
         end
 
         bytes = IO.write(page_path, content)
-        puts "Done (#{humanize(Time.now - process_start_time)}) => '#{page_path}' bytes[#{bytes}]."
+        puts "Done (#{Generator.humanize(Time.now - single_start_time)}) => '#{page_path}' bytes[#{bytes}]."
       end
 
-      puts "Generator time elapsed : #{humanize(Time.now - start_time)}."
+      puts "\nGenerator time elapsed : #{Generator.humanize(Time.now - start_time)}."
     end
 
     def parse_markdown_file(file_path)
@@ -101,10 +101,15 @@ module Khaleesi
         foreach_snippet = handle_foreach_snippet(foreach_snippet)
 
         # because the Regexp cannot skip a unhandled foreach snippet,
-        # so we claim every snippet must successful before we do next.
-        break unless foreach_snippet
+        # so we claim every snippet must successful, and if not, we shall use blank as replacement.
+        parsed_text.sub!(regexp, foreach_snippet.to_s)
+      end
 
-        parsed_text.sub!(regexp, foreach_snippet)
+
+      regexp = /(#if\p{Blank}?chain:(prev|next)\(\$(\p{Graph}+)\)(.+?)#end)/m
+      while (chain_snippet = parsed_text.match(regexp))
+        chain_snippet = handle_chain_snippet(chain_snippet)
+        parsed_text.sub!(regexp, chain_snippet.to_s)
       end
 
 
@@ -221,22 +226,11 @@ module Khaleesi
     def handle_foreach_snippet(foreach_snippet)
       var_name = foreach_snippet[2]
       loop_body = foreach_snippet[4]
-      dir_name = foreach_snippet[3].prepend(@page_dir)
 
-      return unless Dir.exists? dir_name
+      dir_path = foreach_snippet[3].prepend(@page_dir)
+      return unless Dir.exists? dir_path
 
-      page_ary = Array.new
-      Dir.glob("#{dir_name}/**/*") do |page_file|
-        page_file = File.expand_path(page_file)
-        next unless is_valid_file(page_file)
-
-        extract_page_structure(page_file)
-        page_ary.push Page.new(page_file, @variable_stack.pop)
-      end
-
-      page_ary.sort! do |left, right|
-        right <=> left
-      end
+      page_ary = take_page_array(dir_path)
 
       body_content = ''
       page_ary.each do |page|
@@ -249,6 +243,42 @@ module Khaleesi
       end
 
       body_content unless body_content.empty?
+    end
+
+    def handle_chain_snippet(chain_snippet)
+      cmd = chain_snippet[2]
+      var_name = chain_snippet[3]
+      loop_body = chain_snippet[4]
+
+      page_ary = take_page_array(File.expand_path('..', @building_page))
+      page_ary.each_with_index do |page, index|
+        next unless page.to_s.eql? @building_page
+
+        page_file = cmd.eql?('prev') ? page_ary.prev(index) : page_ary.next(index)
+        return unless page_file
+
+        @variable_stack.push(page_file.instance_variable_get(:@page_variables))
+        body_content = handle_html_content(
+            page_file.instance_variable_get(:@page_file), loop_body, var_name)
+        @variable_stack.pop
+
+        return body_content
+      end
+      nil
+    end
+
+    def take_page_array(dir_path)
+      page_ary = Array.new
+      Dir.glob("#{dir_path}/**/*") do |page_file|
+        next unless is_valid_file(page_file)
+
+        extract_page_structure(page_file)
+        page_ary.push Page.new(page_file, @variable_stack.pop)
+      end
+
+      page_ary.sort! do |left, right|
+        right <=> left
+      end
     end
 
     def extract_page_structure(page_file)
@@ -265,7 +295,7 @@ module Khaleesi
     end
 
     def get_link(page_path, variables)
-      # only generate link for title-present page
+      # only generate link for title-present page.
       title = variables[@title_regexp, 3] if variables
       return unless title
 
@@ -341,7 +371,7 @@ module Khaleesi
       file_path and file_path.end_with? '.html'
     end
 
-    def humanize(secs) # http://stackoverflow.com/a/4136485/1294681
+    def self.humanize(secs) # http://stackoverflow.com/a/4136485/1294681
       secs = secs * 1000
       [[1000, :milliseconds], [60, :seconds], [60, :minutes]].map { |count, name|
         if secs > 0
@@ -357,8 +387,8 @@ module Khaleesi
     @page_variables
 
     def initialize(page_file, page_variables)
+      @page_file = File.expand_path(page_file)
       @page_variables = page_variables
-      @page_file = page_file
     end
 
     def <=> (other)
@@ -379,16 +409,33 @@ module Khaleesi
       end
 
 
-      self_create_time = Generator.fetch_create_time(@page_file)
-      other_create_time = Generator.fetch_create_time(other.instance_variable_get(:@page_file))
+      other_create_time = other.take_create_time
+      self_create_time = take_create_time
 
       return -1 unless self_create_time
       return 1 unless other_create_time
       self_create_time <=> other_create_time
     end
 
+    @create_time
+    def take_create_time
+      # cache the create time to improve performance.
+      return @create_time if @create_time
+      @create_time = Generator.fetch_create_time(@page_file)
+    end
+
     def to_s
       @page_file
+    end
+  end
+
+  class Array < Array
+    def next(index)
+      index += 1
+      index < size ? at(index) : nil
+    end
+    def prev(index)
+      index > 0 ? at(index - 1) : nil
     end
   end
 end
