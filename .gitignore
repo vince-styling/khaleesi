@@ -1,6 +1,7 @@
 *.iml
 .idea
 *.idb
+site
 
 *.gem
 *.rbc
