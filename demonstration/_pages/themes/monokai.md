@@ -21,11 +21,9 @@ sequence: 5
 }
 .monokai .highlight .cp {
   color: #75715e;
-  font-weight: bold;
 }
 .monokai .highlight .cs {
   color: #75715e;
-  font-weight: bold;
   font-style: italic;
 }
 .monokai .highlight .err {
@@ -58,46 +56,36 @@ sequence: 5
   color: #555555;
 }
 .monokai .highlight .gs {
-  font-weight: bold;
 }
 .monokai .highlight .gu {
   color: #aaaaaa;
 }
 .monokai .highlight .k, .monokai .highlight .kv {
   color: #66d9ef;
-  font-weight: bold;
 }
 .monokai .highlight .kc {
   color: #66d9ef;
-  font-weight: bold;
 }
 .monokai .highlight .kd {
   color: #66d9ef;
-  font-weight: bold;
 }
 .monokai .highlight .kp {
   color: #66d9ef;
-  font-weight: bold;
 }
 .monokai .highlight .kr {
   color: #66d9ef;
-  font-weight: bold;
 }
 .monokai .highlight .kt {
   color: #66d9ef;
-  font-weight: bold;
 }
 .monokai .highlight .kn {
   color: #f92672;
-  font-weight: bold;
 }
 .monokai .highlight .ow {
   color: #f92672;
-  font-weight: bold;
 }
 .monokai .highlight .o {
   color: #f92672;
-  font-weight: bold;
 }
 .monokai .highlight .mf {
   color: #ae81ff;
@@ -158,19 +146,15 @@ sequence: 5
 }
 .monokai .highlight .nc {
   color: #a6e22e;
-  font-weight: bold;
 }
 .monokai .highlight .nd {
   color: #a6e22e;
-  font-weight: bold;
 }
 .monokai .highlight .ne {
   color: #a6e22e;
-  font-weight: bold;
 }
 .monokai .highlight .nf {
   color: #a6e22e;
-  font-weight: bold;
 }
 .monokai .highlight .no {
   color: #66d9ef;
@@ -204,7 +188,6 @@ sequence: 5
 }
 .monokai .highlight .nl {
   color: #f8f8f2;
-  font-weight: bold;
 }
 .monokai .highlight .nt {
   color: #f92672;

@@ -38,7 +38,6 @@ sequence: 8
 .base16 .highlight .gh {
   color: #6a9fb5;
   background-color: #151515;
-  font-weight: bold;
 }
 .base16 .highlight .k, .base16 .highlight .kn, .base16 .highlight .kp, .base16 .highlight .kr, .base16 .highlight .kv {
   color: #aa759f;

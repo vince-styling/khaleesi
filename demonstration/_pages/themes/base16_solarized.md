@@ -38,7 +38,6 @@ sequence: 2
 .base16_solarized .highlight .gh {
   color: #6a9fb5;
   background-color: #151515;
-  font-weight: bold;
 }
 .base16_solarized .highlight .k, .base16_solarized .highlight .kn, .base16_solarized .highlight .kp, .base16_solarized .highlight .kr, .base16_solarized .highlight .kv {
   color: #aa759f;

@@ -13,7 +13,6 @@ sequence: 1
 }
 .github .highlight .cp {
   color: #999999;
-  font-weight: bold;
 }
 .github .highlight .c1 {
   color: #999988;
@@ -21,7 +20,6 @@ sequence: 1
 }
 .github .highlight .cs {
   color: #999999;
-  font-weight: bold;
   font-style: italic;
 }
 .github .highlight .c, .github .highlight .cd {
@@ -57,7 +55,6 @@ sequence: 1
   color: #555555;
 }
 .github .highlight .gs {
-  font-weight: bold;
 }
 .github .highlight .gu {
   color: #aaaaaa;
@@ -67,31 +64,24 @@ sequence: 1
 }
 .github .highlight .kc {
   color: #000000;
-  font-weight: bold;
 }
 .github .highlight .kd {
   color: #000000;
-  font-weight: bold;
 }
 .github .highlight .kn {
   color: #000000;
-  font-weight: bold;
 }
 .github .highlight .kp {
   color: #000000;
-  font-weight: bold;
 }
 .github .highlight .kr {
   color: #000000;
-  font-weight: bold;
 }
 .github .highlight .kt {
   color: #445588;
-  font-weight: bold;
 }
 .github .highlight .k, .github .highlight .kv {
   color: #000000;
-  font-weight: bold;
 }
 .github .highlight .mf {
   color: #009999;
@@ -158,29 +148,24 @@ sequence: 1
 }
 .github .highlight .nc {
   color: #445588;
-  font-weight: bold;
 }
 .github .highlight .no {
   color: #008080;
 }
 .github .highlight .nd {
   color: #3c5d5d;
-  font-weight: bold;
 }
 .github .highlight .ni {
   color: #800080;
 }
 .github .highlight .ne {
   color: #990000;
-  font-weight: bold;
 }
 .github .highlight .nf {
   color: #990000;
-  font-weight: bold;
 }
 .github .highlight .nl {
   color: #990000;
-  font-weight: bold;
 }
 .github .highlight .nn {
   color: #555555;
@@ -202,11 +187,9 @@ sequence: 1
 }
 .github .highlight .ow {
   color: #000000;
-  font-weight: bold;
 }
 .github .highlight .o {
   color: #000000;
-  font-weight: bold;
 }
 .github .highlight .w {
   color: #bbbbbb;
