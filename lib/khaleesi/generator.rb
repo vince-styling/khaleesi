@@ -407,10 +407,7 @@ module Khaleesi
 
       other_create_time = other.take_create_time
       self_create_time = take_create_time
-
-      return -1 unless self_create_time
-      return 1 unless other_create_time
-      self_create_time <=> other_create_time
+      other_create_time <=> self_create_time
     end
 
     @create_time
