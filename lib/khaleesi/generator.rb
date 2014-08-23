@@ -194,7 +194,7 @@ module Khaleesi
                     break
                   end
 
-                  inc_content = parse_html_file(match_page) if is_html_file(match_page)
+                  inc_content = parse_html_file(match_page, '') if is_html_file(match_page)
                   inc_content = parse_markdown_file(match_page) if is_markdown_file(match_page)
 
                   parsed_text << (inc_content ? inc_content : sub_script)
