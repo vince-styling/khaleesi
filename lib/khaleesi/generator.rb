@@ -96,7 +96,7 @@ module Khaleesi
 
 
       # http://www.ruby-doc.org/core-2.1.0/Regexp.html#class-Regexp-label-Repetition use '.+?' to disable greedy match.
-      regexp = /(#foreach\p{Blank}?\(\$(\p{Graph}+)\p{Blank}?:\p{Blank}?\$(\p{Graph}+)\)(.+?)#end)/m
+      regexp = /(#foreach\p{Blank}?\(\$(\p{Graph}+)\p{Blank}?:\p{Blank}?\$(\p{Graph}+)([^\)]*)\)(.+?)#end)/m
       while (foreach_snippet = parsed_text.match(regexp))
         foreach_snippet = handle_foreach_snippet(foreach_snippet)
 
@@ -224,16 +224,23 @@ module Khaleesi
     end
 
     def handle_foreach_snippet(foreach_snippet)
-      var_name = foreach_snippet[2]
-      loop_body = foreach_snippet[4]
-
       dir_path = foreach_snippet[3].prepend(@page_dir)
       return unless Dir.exists? dir_path
 
       page_ary = take_page_array(dir_path)
+      loop_body = foreach_snippet[5]
+      var_name = foreach_snippet[2]
+
+      sub_terms = foreach_snippet[4].to_s.strip.match(/(asc|desc)?\p{Blank}?(\d)*/)
+      order_by = sub_terms[1].to_s
+      limit = sub_terms[2].to_i
+      limit = -1 if limit == 0
+
+      page_ary.reverse! if order_by.eql?('desc')
 
       parsed_body = ''
-      page_ary.each do |page|
+      page_ary.each_with_index do |page, index|
+        break if index == limit
         @variable_stack.push(page.instance_variable_get(:@page_variables))
         parsed_body << handle_html_content(page.to_s, loop_body, var_name)
         @variable_stack.pop
