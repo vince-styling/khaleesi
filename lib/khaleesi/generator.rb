@@ -232,17 +232,14 @@ module Khaleesi
 
       page_ary = take_page_array(dir_path)
 
-      body_content = ''
+      parsed_body = ''
       page_ary.each do |page|
         @variable_stack.push(page.instance_variable_get(:@page_variables))
-
-        body_content << handle_html_content(
-            page.instance_variable_get(:@page_file), loop_body, var_name)
-
+        parsed_body << handle_html_content(page.to_s, loop_body, var_name)
         @variable_stack.pop
       end
 
-      body_content unless body_content.empty?
+      parsed_body unless parsed_body.empty?
     end
 
     def handle_chain_snippet(chain_snippet)
@@ -258,11 +255,10 @@ module Khaleesi
         return unless page_file
 
         @variable_stack.push(page_file.instance_variable_get(:@page_variables))
-        body_content = handle_html_content(
-            page_file.instance_variable_get(:@page_file), loop_body, var_name)
+        parsed_body = handle_html_content(page_file.to_s, loop_body, var_name)
         @variable_stack.pop
 
-        return body_content
+        return parsed_body
       end
       nil
     end
@@ -403,9 +399,9 @@ module Khaleesi
         self_sequence = 0 unless self_sequence
         other_sequence = 0 unless other_sequence
 
-        return 1 if self_sequence.to_i < other_sequence.to_i
-        return 0 if self_sequence.to_i == other_sequence.to_i
-        return -1 if self_sequence.to_i > other_sequence.to_i
+        return 1 if self_sequence < other_sequence
+        return 0 if self_sequence == other_sequence
+        return -1 if self_sequence > other_sequence
       end
 
 
