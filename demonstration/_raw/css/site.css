@@ -1,10 +1,6 @@
 * {
     margin: 0;
     padding: 0;
-    border: 0;
-    outline: 0;
-    font-size: 100%;
-    vertical-align: baseline;
 }
 
 body {
@@ -57,7 +53,8 @@ h2 span {
 }
 
 p {
-    margin-bottom: 1em;
+    line-height: 26px;
+    font-size: 16px;
 }
 
 .footer {
@@ -94,8 +91,17 @@ p {
     clear: both;
 }
 
+pre {
+    line-height: 1.7em;
+}
+
+code {
+    font-family: "Source Code Pro", Courier, monospace;
+    font-weight: 400;
+    font-size: 14px;
+}
+
 .theme {
-    font-size: 15px;
     width: 100%;
 }
 
@@ -105,7 +111,6 @@ p {
 }
 
 .theme pre {
-    font-size: 14px;
     margin: 20px 0;
     overflow: auto;
     -webkit-border-radius: 4px;
@@ -162,7 +167,6 @@ p {
     -ms-border-radius: 4px;
     -o-border-radius: 4px;
     border-radius: 4px;
-    line-height: 1.5em;
     padding: 12px;
-    height: 180px;
+    height: 200px;
 }
