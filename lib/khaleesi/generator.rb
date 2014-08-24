@@ -29,11 +29,14 @@ module Khaleesi
       @variable_stack = Array.new
       start_time = Time.now
 
+      @page_stack = Array.new
+
       Dir.glob("#{@page_dir}/**/*") do |page_file|
         next unless File.readable? page_file
         next unless is_valid_file page_file
 
-        @building_page = File.expand_path(page_file)
+        @page_stack.clear
+        @page_stack.push File.expand_path(page_file)
         single_start_time = Time.now
 
         if @diff_plus
@@ -95,15 +98,15 @@ module Khaleesi
     def parse_html_file(file_path, bore_content)
       content = extract_page_structure(file_path)
 
-      content = parse_html_content(file_path, content.to_s, bore_content)
+      content = parse_html_content(content.to_s, bore_content)
       content = parse_decorator_file(content) # recurse parse
 
       @variable_stack.pop
       content
     end
 
-    def parse_html_content(page_file, html_content, bore_content)
-      parsed_text = handle_html_content(page_file, html_content, '')
+    def parse_html_content(html_content, bore_content)
+      parsed_text = handle_html_content(html_content, '')
 
 
       # http://www.ruby-doc.org/core-2.1.0/Regexp.html#class-Regexp-label-Repetition use '.+?' to disable greedy match.
@@ -129,7 +132,8 @@ module Khaleesi
       parsed_text
     end
 
-    def handle_html_content(page_file, html_content, added_scope)
+    def handle_html_content(html_content, added_scope)
+      page_file = @page_stack.last
       parsed_text = ''
       sub_script = ''
 
@@ -205,7 +209,11 @@ module Khaleesi
                     break
                   end
 
-                  inc_content = parse_html_file(match_page, '') if is_html_file(match_page)
+                  if is_html_file(match_page)
+                    @page_stack.push match_page
+                    inc_content = parse_html_file(match_page, '')
+                    @page_stack.pop
+                  end
                   inc_content = parse_markdown_file(match_page) if is_markdown_file(match_page)
 
                   parsed_text << (inc_content ? inc_content : sub_script)
@@ -253,8 +261,12 @@ module Khaleesi
       page_ary.each_with_index do |page, index|
         break if index == limit
         @variable_stack.push(page.instance_variable_get(:@page_variables))
-        parsed_body << handle_html_content(page.to_s, loop_body, var_name)
+        @page_stack.push page.to_s
+
+        parsed_body << handle_html_content(loop_body, var_name)
+
         @variable_stack.pop
+        @page_stack.pop
       end
 
       parsed_body unless parsed_body.empty?
@@ -265,16 +277,20 @@ module Khaleesi
       var_name = chain_snippet[3]
       loop_body = chain_snippet[4]
 
-      page_ary = take_page_array(File.expand_path('..', @building_page))
+      page_ary = take_page_array(File.expand_path('..', @page_stack.first))
       page_ary.each_with_index do |page, index|
-        next unless page.to_s.eql? @building_page
+        next unless page.to_s.eql? @page_stack.first
 
         page_file = cmd.eql?('prev') ? page_ary.prev(index) : page_ary.next(index)
         return unless page_file
 
         @variable_stack.push(page_file.instance_variable_get(:@page_variables))
-        parsed_body = handle_html_content(page_file.to_s, loop_body, var_name)
+        @page_stack.push page_file.to_s
+
+        parsed_body = handle_html_content(loop_body, var_name)
+
         @variable_stack.pop
+        @page_stack.pop
 
         return parsed_body
       end
