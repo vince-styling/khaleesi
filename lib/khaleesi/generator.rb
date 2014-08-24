@@ -144,18 +144,20 @@ module Khaleesi
             parsed_text << sub_script unless sub_script.empty?
             sub_script.clear << char
 
-          when '{'
-            is_valid = sub_script.eql? '$'
-            (is_valid ? sub_script : parsed_text) << char
-
-          when ':'
-            is_valid = is_valid && sub_script.length > 3
-            (is_valid ? sub_script : parsed_text) << char
+          when '{', ':'
+            is_valid = sub_script.eql? '$' if char == '{'
+            is_valid = is_valid && sub_script.length > 3 if char == ':'
+            if is_valid
+              sub_script << char
+            else
+              parsed_text << sub_script << char
+              sub_script.clear
+            end
 
           when '}'
             is_valid = is_valid && sub_script.length > 4
+            sub_script << char
             if is_valid
-              sub_script << char
 
               form_scope = sub_script[@var_regexp, 1]
               form_value = sub_script[@var_regexp, 2]
@@ -223,11 +225,11 @@ module Khaleesi
                   parsed_text << sub_script
               end
 
-              sub_script.clear
-
             else
-              parsed_text << char
+              parsed_text << sub_script
             end
+
+            sub_script.clear
 
           else
             is_valid = is_valid && char.index(/\p{Graph}/)
