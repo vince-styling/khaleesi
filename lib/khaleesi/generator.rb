@@ -38,10 +38,21 @@ module Khaleesi
 
         if @diff_plus
           file_status = nil
+          base_name = File.basename(page_file)
           Dir.chdir(File.expand_path('..', page_file)) do
-            file_status = %x[git status -s #{File.basename(page_file)}]
+            file_status = %x[git status -s #{base_name} 2>&1]
           end
-          next unless file_status and file_status.strip.length > 2
+          file_status = file_status.to_s.strip
+
+          # only haven't commit pages available, Git will return nothing if page committed.
+          next if file_status.empty?
+
+          # a correct message from Git should included the file name, may occur errors
+          # in command running such as Git didn't install if not include.
+          unless file_status.include? base_name
+            puts file_status
+            next
+          end
         end
 
         extract_page_structure(page_file)
@@ -330,8 +341,12 @@ module Khaleesi
 
     def self.fetch_git_time(page_file, cmd)
       Dir.chdir(File.expand_path('..', page_file)) do
-        create_time = %x[git log --date=iso --pretty='%cd' #{File.basename(page_file)} | #{cmd} -1]
-        create_time.to_s.strip.empty? ? Time.now : Time.parse(create_time)
+        commit_time = %x[git log --date=iso --pretty='%cd' #{File.basename(page_file)} 2>&1 | #{cmd} -1]
+        begin
+          Time.parse(commit_time)
+        rescue
+          Time.now
+        end
       end
     end
 
