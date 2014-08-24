@@ -141,6 +141,7 @@ module Khaleesi
         is_valid = sub_script.start_with?('${')
         case char
           when '$'
+            parsed_text << sub_script unless sub_script.empty?
             sub_script.clear << char
 
           when '{'
