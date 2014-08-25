@@ -1,24 +1,38 @@
 module Khaleesi
   class Generator
 
+    # The constructor accepts all settings then keep them as fields, lively in whole processing job.
     def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern, date_pattern, diff_plus)
+      # source directory path (must absolutely).
       @src_dir = src_dir
-      @dest_dir = dest_dir
-      $line_numbers = line_numbers.eql?('true')
-      $css_class = css_class
-      @time_pattern = time_pattern
-      @date_pattern = date_pattern
-      @diff_plus = diff_plus.eql?('true')
 
-      # puts "src_dir : #{@src_dir}"
-      # puts "dest_dir : #{@dest_dir}"
-      # puts "line_numbers : #{$line_numbers}"
-      # puts "css_class : #{$css_class}"
-      # puts "time_pattern : #{@time_pattern}"
-      # puts "date_pattern : #{@date_pattern}"
-      # puts "diff_plus : #{@diff_plus}"
+      # destination directory path (must absolutely).
+      @dest_dir = dest_dir
+
+      # setting to tell Rouge output line numbers.
+      $line_numbers = line_numbers.eql?('true')
+
+      # a css class name which developer wants to customizable.
+      $css_class = css_class
+
+      # a full time pattern used to including date and time like '2014-08-22 16:45'.
+      # see http://www.ruby-doc.org/core-2.1.2/Time.html#strftime-method for pattern details.
+      @time_pattern = time_pattern
+
+      # a short time pattern used to display only date like '2014-08-22'.
+      @date_pattern = date_pattern
+
+      # we just pick on those pages who changed but haven't commit
+      # to git repository to generate, ignore the unchanged pages.
+      # this action could be a huge benefit when you were creating
+      # a new page and you want just to see what was she like at final.
+      @diff_plus = diff_plus.eql?('true')
     end
 
+    # Main entry of Generator that generates all the pages of the site,
+    # it scan the source directory files that fulfill the rule of page,
+    # evaluates and applies all predefine logical, writes the final
+    # content into destination directory cascaded.
     def generate
       @decrt_regexp = produce_variable_regex('decorator')
       @title_regexp = produce_variable_regex('title')
@@ -26,9 +40,14 @@ module Khaleesi
       @doc_regexp = /‡{6,}/
 
       @page_dir = "#{@src_dir}/_pages/"
-      @variable_stack = Array.new
       start_time = Time.now
 
+      # a cascaded variable stack that storing a set of page's variable while generating,
+      # able for each handling page to grab it parent's variable and parent's variable.
+      @variable_stack = Array.new
+
+      # a queue that storing valid pages, use to avoid invalid page(decorator file)
+      # influence the page link, page times generation.
       @page_stack = Array.new
 
       Dir.glob("#{@page_dir}/**/*") do |page_file|
@@ -69,7 +88,7 @@ module Khaleesi
 
         content = is_html_file(page_file) ? parse_html_file(page_file, '') : parse_markdown_file(page_file)
 
-        page_path = File.expand_path(@dest_dir + get_link(page_file, variables))
+        page_path = File.expand_path(@dest_dir + gen_link(page_file, variables))
         page_dir_path = File.dirname(page_path)
         unless File.directory?(page_dir_path)
           FileUtils.mkdir_p(page_dir_path)
@@ -79,7 +98,7 @@ module Khaleesi
         puts "Done (#{Generator.humanize(Time.now - single_start_time)}) => '#{page_path}' bytes[#{bytes}]."
       end
 
-      puts "\nGenerator time elapsed : #{Generator.humanize(Time.now - start_time)}."
+      puts "Generator time elapsed : #{Generator.humanize(Time.now - start_time)}."
     end
 
     def parse_markdown_file(file_path)
@@ -115,7 +134,8 @@ module Khaleesi
         foreach_snippet = handle_foreach_snippet(foreach_snippet)
 
         # because the Regexp cannot skip a unhandled foreach snippet,
-        # so we claim every snippet must successful, and if not, we shall use blank as replacement.
+        # so we claim every snippet must done successfully,
+        # and if not, we shall use blank as replacement.
         parsed_text.sub!(regexp, foreach_snippet.to_s)
       end
 
@@ -127,6 +147,8 @@ module Khaleesi
       end
 
 
+      # we deal with decorator's content at final because it may slow down
+      # the process even cause errors for the "foreach" and "chain" scripts.
       parsed_text.sub!(/\$\{decorator:content}/, bore_content)
 
       parsed_text
@@ -137,10 +159,13 @@ module Khaleesi
       parsed_text = ''
       sub_script = ''
 
+      # char by char to evaluate html content.
       html_content.each_char do |char|
         is_valid = sub_script.start_with?('${')
         case char
           when '$'
+            # if met the variable expression beginner, we'll append precede characters to parsed_text
+            # so the invalid part of expression still output as usual text rather than erase them.
             parsed_text << sub_script unless sub_script.empty?
             sub_script.clear << char
 
@@ -159,6 +184,8 @@ module Khaleesi
             sub_script << char
             if is_valid
 
+              # parsing variable expressions such as :
+              # ${variable:title}, ${variable:description}, ${custom_scope:custom_value} etc.
               form_scope = sub_script[@var_regexp, 1]
               form_value = sub_script[@var_regexp, 2]
 
@@ -183,7 +210,7 @@ module Khaleesi
                       parsed_text << (modify_time ? modify_time.strftime(@date_pattern) : sub_script)
 
                     when 'link'
-                      page_link = get_link(page_file, @variable_stack.last)
+                      page_link = gen_link(page_file, @variable_stack.last)
                       parsed_text << (page_link ? page_link : sub_script)
 
                     else
@@ -245,6 +272,28 @@ module Khaleesi
       parsed_text
     end
 
+    # Foreach loop was design for traversal all files of directory which inside the "_pages" directory,
+    # each time through the loop, the segment who planning to repeat would be evaluate and output as parsed text.
+    # at the beginning, we'll gather all files and sort by sequence or create time finally produce an ordered list.
+    # NOTE: sub-directory writing was acceptable, also apply order-by-limit mode like SQL to manipulate that list.
+    #
+    # examples :
+    #
+    # loop the whole list :
+    # <ul>
+    #   #foreach ($theme : $themes)
+    #     <li>${theme:name}</li>
+    #     <li>${theme:description}</li>
+    #   #end
+    # </ul>
+    #
+    # loop the whole list but sortby descending and limit 5 items.
+    # <ul>
+    #   #foreach ($theme : $themes desc 5)
+    #     <li>${theme:name}</li>
+    #     <li>${theme:description}</li>
+    #   #end
+    # </ul>
     def handle_foreach_snippet(foreach_snippet)
       dir_path = foreach_snippet[3].prepend(@page_dir)
       return unless Dir.exists? dir_path
@@ -258,23 +307,31 @@ module Khaleesi
       limit = sub_terms[2].to_i
       limit = -1 if limit == 0
 
+      # if sub-term enable descending order, we'll reversing the page stack.
       page_ary.reverse! if order_by.eql?('desc')
 
       parsed_body = ''
       page_ary.each_with_index do |page, index|
+        # abort loop if has limitation.
         break if index == limit
-        @variable_stack.push(page.instance_variable_get(:@page_variables))
-        @page_stack.push page.to_s
-
-        parsed_body << handle_html_content(loop_body, var_name)
-
-        @variable_stack.pop
-        @page_stack.pop
+        parsed_body << handle_snippet_page(page, loop_body, var_name)
       end
-
-      parsed_body unless parsed_body.empty?
+      parsed_body
     end
 
+    # Chain, just as its name meaning, we take the previous or next page from the ordered list
+    # which same of foreach snippet, of course that list contained current page we just
+    # generating on, so we took the near item for it, just make it like a chain.
+    #
+    # examples :
+    #
+    # #if chain:prev($theme)
+    #   <div class="prev">Prev Theme : <a href="${theme:link}">${theme:title}</a></div>
+    # #end
+    #
+    # #if chain:next($theme)
+    #   <div class="next">Next Theme : <a href="${theme:link}">${theme:title}</a></div>
+    # #end
     def handle_chain_snippet(chain_snippet)
       cmd = chain_snippet[2]
       var_name = chain_snippet[3]
@@ -284,22 +341,28 @@ module Khaleesi
       page_ary.each_with_index do |page, index|
         next unless page.to_s.eql? @page_stack.first
 
-        page_file = cmd.eql?('prev') ? page_ary.prev(index) : page_ary.next(index)
-        return unless page_file
-
-        @variable_stack.push(page_file.instance_variable_get(:@page_variables))
-        @page_stack.push page_file.to_s
-
-        parsed_body = handle_html_content(loop_body, var_name)
-
-        @variable_stack.pop
-        @page_stack.pop
-
-        return parsed_body
+        page = cmd.eql?('prev') ? page_ary.prev(index) : page_ary.next(index)
+        return page ? handle_snippet_page(page, loop_body, var_name) : nil
       end
       nil
     end
 
+    def handle_snippet_page(page, loop_body, var_name)
+      # make current page properties occupy atop for two stacks while processing such sub-level files.
+      @variable_stack.push(page.instance_variable_get(:@page_variables))
+      @page_stack.push page.to_s
+
+      parsed_body = handle_html_content(loop_body, var_name)
+
+      # abandon that properties immediately.
+      @variable_stack.pop
+      @page_stack.pop
+
+      parsed_body
+    end
+
+    # Search that directory and it's sub-directories, collecting all valid files,
+    # then sorting by sequence or create time before return.
     def take_page_array(dir_path)
       page_ary = Array.new
       Dir.glob("#{dir_path}/**/*") do |page_file|
@@ -314,6 +377,7 @@ module Khaleesi
       end
     end
 
+    # Split by separators, extract page's variables and content.
     def extract_page_structure(page_file)
       document = IO.read(page_file)
 
@@ -322,12 +386,13 @@ module Khaleesi
         @variable_stack.push(conary[0])
         conary[1]
       else
+        # we must hold the variable stack.
         @variable_stack.push(nil)
         document
       end
     end
 
-    def get_link(page_path, variables)
+    def gen_link(page_path, variables)
       # only generate link for title-present page.
       title = variables[@title_regexp, 3] if variables
       return unless title
@@ -336,13 +401,18 @@ module Khaleesi
       relative_path = File.dirname(relative_loc)
       relative_path << '/' unless relative_path.end_with? '/'
 
+      # fetch and use the pre-define page name if legal.
       page_name = variables[produce_variable_regex('slug'), 3]
       return File.expand_path(relative_path << page_name) unless page_name.strip.empty? if page_name
 
+      # use the file name if was html file.
       return relative_loc if is_html_file(relative_loc)
 
+      # we shall use the page title to generating a link.
       page_name = title
+      # delete else characters if not [alpha,number,underscore].
       page_name.gsub!(/[^\p{Alnum}\p{Blank}_]/i, '')
+      # replace [blank] to dashes.
       page_name.gsub!(/\p{Blank}/, '-')
       page_name.downcase!
       page_name.strip!
@@ -351,17 +421,23 @@ module Khaleesi
     end
 
     def self.fetch_create_time(page_file)
+      # fetch the first Git versioned time as create time.
       fetch_git_time(page_file, 'tail')
     end
 
     def self.fetch_modify_time(page_file)
+      # fetch the last Git versioned time as modify time.
       fetch_git_time(page_file, 'head')
     end
 
+    # Enter into the file container and take the Git time,
+    # if something wrong with executing(Git didn't install?),
+    # we'll use current time as replacement.
     def self.fetch_git_time(page_file, cmd)
       Dir.chdir(File.expand_path('..', page_file)) do
         commit_time = %x[git log --date=iso --pretty='%cd' #{File.basename(page_file)} 2>&1 | #{cmd} -1]
         begin
+          # the rightful time looks like this : "2014-08-18 18:44:41 +0800"
           Time.parse(commit_time)
         rescue
           Time.now
@@ -369,9 +445,11 @@ module Khaleesi
       end
     end
 
+    # intercept the Redcarpet processing, do the syntax highlighter with Rouge.
     class HTML < Redcarpet::Render::HTML
       include Rouge::Plugins::Redcarpet
       def rouge_formatter(opts=nil)
+        # extracting the lexer tag(language name) and join with the custom css class.
         css_class = opts.fetch(:css_class) if opts
         lexer_tag = css_class[/highlight (\S+)/, 1] if css_class
         lexer_tag ? lexer_tag.prepend(' ') : lexer_tag = ''
@@ -453,7 +531,7 @@ module Khaleesi
 
     @create_time
     def take_create_time
-      # cache the create time to improve performance.
+      # cache the create time to improve performance while sorting by.
       return @create_time if @create_time
       @create_time = Generator.fetch_create_time(@page_file)
     end
