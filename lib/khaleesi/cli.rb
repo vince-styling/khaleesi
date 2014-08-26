@@ -357,7 +357,7 @@ module Khaleesi
         end
 
         pages_dir << '/posts'
-        post_file = create_file_p("#{pages_dir}/2013", 'khaleesi-introduction', 'md')
+        post_file = create_file_p("#{pages_dir}/2014", 'khaleesi-introduction', 'md')
         open(post_file, 'w') do |f|
           f.puts 'title: khaleesi\'s introduction'
           f.puts 'decorator: post'
@@ -369,7 +369,7 @@ module Khaleesi
           f.puts 'please check [this](https://github.com/vince-styling/khaleesi) for more details.'
         end
 
-        post_file = create_file_p("#{pages_dir}/2014", 'netroid-introduction', 'md')
+        post_file = create_file_p("#{pages_dir}/2013", 'netroid-introduction', 'md')
         open(post_file, 'w') do |f|
           f.puts 'title: netroid\'s introduction'
           f.puts 'decorator: post'
