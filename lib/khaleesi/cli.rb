@@ -207,15 +207,90 @@ module Khaleesi
 
         root_dir = "#{Dir.pwd}/#{@directory_name}"
 
+        gen_site = "#{root_dir}/gen_site"
+        execute_script = create_file_p(root_dir, @directory_name, '')
+        open(execute_script, 'w') do |f|
+          f.puts '#!/bin/bash'
+          f.puts ''
+          f.puts "src_dir=#{root_dir}"
+          f.puts "dest_dir=#{gen_site}"
+          f.puts 'line_numbers="false"'
+          f.puts 'css_class="highlight"'
+          f.puts 'time_pattern="%Y-%m-%d %H:%M"'
+          f.puts 'date_pattern="%F"'
+
+          f.puts 'if [[ "$1" == "generate" ]]; then'
+          f.puts '  diff=$([ "$2" == \'diff\' ] && echo "true" || echo "false")'
+          f.puts '  khaleesi generate --src-dir "$src_dir" --dest-dir "$dest_dir" --line-numbers $line_numbers --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" --diff-plus $diff'
+          f.puts ''
+          f.puts 'elif [[ "$1" == "serve" ]]; then'
+          f.puts '  ruby -run -e httpd $dest_dir -p 9090'
+          f.puts ''
+          f.puts 'fi'
+        end
+        File.chmod(0755, execute_script)
+        FileUtils.mkdir_p(gen_site)
+
         css_dir = "#{root_dir}/_raw/css"
         css_file = create_file_p(css_dir, 'site', 'css')
         open(css_file, 'w') do |f|
-          f.puts 'body { border-top: 10px solid #f5f5f5; }'
-          f.puts 'a { color: #d14; text-decoration: none; }'
-          f.puts 'a:hover { text-decoration: underline; }'
-          f.puts '.header { background-color: red; font-size: 20px; }'
-          f.puts '.content { background-color: pink; font-size: 26px; }'
-          f.puts '.footer { background-color: blue; font-size: 20px; }'
+          f.puts '* {margin:0; padding:0;}'
+          f.puts 'body {margin:40px auto; width:940px; line-height:1.8em;}'
+
+          f.puts 'a {color:#149ad4; text-decoration:none;}'
+          f.puts 'a:hover {text-decoration:underline;}'
+
+          f.puts '.header { font-size: 18px; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #ddd; box-shadow: 0 1px 0 rgba(255,255,255,0.5);}'
+          f.puts '.content { font-size: 20px; padding-bottom: 10px; }'
+
+          f.puts '.content .primary .post_list {'
+          f.puts '  list-style-type: none;'
+          f.puts '}'
+
+          f.puts '.content .primary .post_list li {'
+          f.puts '  border: 1px solid #ddd;'
+          f.puts '  margin-bottom: 10px;'
+          f.puts '  padding: 10px;'
+          f.puts '}'
+
+          f.puts '.content .primary .post_list li p {'
+          f.puts '  color: #5c5855;'
+          f.puts '  font-size: 16px;'
+          f.puts '}'
+
+          f.puts '.content .primary .post_list li span {'
+          f.puts '  color: #60E;'
+          f.puts '  font-size: 12px;'
+          f.puts '}'
+
+          f.puts '.content .post_title {'
+          f.puts '  margin: 10px 0;'
+          f.puts '  font-size: 32px;'
+          f.puts '  text-align: center;'
+          f.puts '}'
+
+          f.puts '.footer {'
+          f.puts '  width: 100%;'
+          f.puts '  margin: 0 auto;'
+          f.puts '  border-top: 2px solid #d5d5d5;'
+          f.puts '  font-size: 13px;'
+          f.puts '  color: #666;'
+          f.puts '  padding-top: 10px;'
+          f.puts '  padding-bottom: 60px;'
+          f.puts '  line-height: 1.8em;'
+          f.puts '}'
+
+          f.puts '.footer .left {'
+          f.puts '  float: left;'
+          f.puts '}'
+
+          f.puts '.footer .right {'
+          f.puts '  float: right;'
+          f.puts '}'
+
+          f.puts '.footer .right div {'
+          f.puts '  text-align: right;'
+          f.puts '}'
         end
 
         FileUtils.mkdir_p("#{root_dir}/_raw/images")
@@ -233,36 +308,48 @@ module Khaleesi
           f.puts '    </head>'
           f.puts '    <body>'
           f.puts '        <div class="header">'
-          f.puts '            This is Header'
+          f.puts '            A khaleesi demonstraction site'
           f.puts '        </div>'
           f.puts '        <div class="content">'
           f.puts '            ${decorator:content}'
           f.puts '        </div>'
           f.puts '        <div class="footer">'
-          f.puts '            <hr/>'
-          f.puts '            This is Footer'
+          f.puts '          <div class="left">'
+          f.puts '            <div>Licensed under the <a href="http://choosealicense.com/licenses/mit/">MIT License</a></div>'
+          f.puts '          </div>'
+          f.puts '          <div class="right">'
+          f.puts '            <div>A pure-ruby static site generator</div>'
+          f.puts '            <div>Find <a href="https://github.com/vince-styling/khaleesi">khaleesi</a> in github</div>'
+          f.puts '          </div>'
           f.puts '        </div>'
           f.puts '    </body>'
           f.puts '</html>'
+        end
+
+        decorator_file = create_file_p(decorators_dir, 'post', 'html')
+        open(decorator_file, 'w') do |f|
+          f.puts 'decorator: basic'
+          f.puts '‡‡‡‡‡‡‡‡‡‡‡‡‡‡'
+          f.puts '<h1 class="post_title">${variable:title}</h1>'
+          f.puts '<div class="post-thumb">'
+          f.puts '    ${decorator:content}'
+          f.puts '</div>'
         end
 
 
         pages_dir = "#{root_dir}/_pages"
         index_file = create_file_p(pages_dir, 'index', 'html')
         open(index_file, 'w') do |f|
-          f.puts 'title: Index Page'
+          f.puts 'title: Khaleesi Index'
           f.puts 'decorator: basic'
           f.puts '‡‡‡‡‡‡‡‡‡‡‡‡‡‡'
           f.puts '<div class="primary">'
           f.puts '    <ul class="post_list">'
           f.puts '        #foreach ($post : $posts)'
           f.puts '            <li title="${post:title}">'
-          f.puts '                <a href="${post:link}">'
-          f.puts '                    <span>${post:title}</span>'
-          f.puts '                    <span>${post:createtime}</span>'
-          f.puts '                    <span>${post:modifytime}</span>'
-          f.puts '                    <p>${post:description}...</p>'
-          f.puts '                </a>'
+          f.puts '                <a href="${post:link}">${post:title}</a>'
+          f.puts '                <span>(${post:createtime})</span>'
+          f.puts '                <p>${post:description}</p>'
           f.puts '            </li>'
           f.puts '        #end'
           f.puts '    </ul>'
@@ -273,7 +360,7 @@ module Khaleesi
         post_file = create_file_p("#{pages_dir}/2013", 'khaleesi-introduction', 'md')
         open(post_file, 'w') do |f|
           f.puts 'title: khaleesi\'s introduction'
-          f.puts 'decorator: basic'
+          f.puts 'decorator: post'
           f.puts 'description: Khaleesi is a static site generator that write by ruby.'
           f.puts '‡‡‡‡‡‡‡‡‡‡‡‡‡‡'
           f.puts ''
@@ -285,7 +372,7 @@ module Khaleesi
         post_file = create_file_p("#{pages_dir}/2014", 'netroid-introduction', 'md')
         open(post_file, 'w') do |f|
           f.puts 'title: netroid\'s introduction'
-          f.puts 'decorator: basic'
+          f.puts 'decorator: post'
           f.puts 'description: Netroid is a Http Framework for Android that based on Volley.'
           f.puts '‡‡‡‡‡‡‡‡‡‡‡‡‡‡'
           f.puts ''
@@ -491,7 +578,7 @@ module Khaleesi
         FileUtils.mkdir_p(dir)
       end
 
-      "#{dir}/#{name}.#{extension}"
+      "#{dir}/#{name}" + (extension.empty? ? '' : ".#{extension}")
     end
 
     def self.normalize_syntax(argv)
