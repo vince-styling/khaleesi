@@ -140,7 +140,7 @@ module Khaleesi
       end
 
 
-      regexp = /(#if\p{Blank}?chain:(prev|next)\(\$(\p{Graph}+)\)(.+?)#end)/m
+      regexp = /(#if\p{Blank}chain:(prev|next)\(\$(\p{Graph}+)\)(.+?)#end)/m
       while (chain_snippet = parsed_text.match(regexp))
         chain_snippet = handle_chain_snippet(chain_snippet)
         parsed_text.sub!(regexp, chain_snippet.to_s)
