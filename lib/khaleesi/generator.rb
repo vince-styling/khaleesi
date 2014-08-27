@@ -304,7 +304,7 @@ module Khaleesi
       loop_body = foreach_snippet[6]
       var_name = foreach_snippet[2]
       order_by = foreach_snippet[4]
-      limit = foreach_snippet[5]
+      limit = foreach_snippet[5].to_i
       limit = -1 if limit == 0
 
       page_ary = take_page_array(dir_path)
