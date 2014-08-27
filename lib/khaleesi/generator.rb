@@ -445,13 +445,24 @@ module Khaleesi
 
     # intercept the Redcarpet processing, do the syntax highlighter with Rouge.
     class HTML < Redcarpet::Render::HTML
-      include Rouge::Plugins::Redcarpet
-      def rouge_formatter(opts=nil)
-        # extracting the lexer tag(language name) and join with the custom css class.
-        css_class = opts.fetch(:css_class) if opts
-        lexer_tag = css_class[/highlight (\S+)/, 1] if css_class
-        lexer_tag ? lexer_tag.prepend(' ') : lexer_tag = ''
-        super :css_class => $css_class + lexer_tag, :line_numbers => $line_numbers
+      def block_code(code, language)
+        css_class = $css_class + (language.to_s.strip.empty? ? '' : ' ' + language)
+        albino_colorize(css_class, code, language || 'text')
+        # rouge_colorize(css_class, code, language)
+      end
+
+      def rouge_colorize(css_class, code, language)
+        formatter = Rouge::Formatters::HTML.new(:css_class => css_class, :line_numbers => $line_numbers)
+        lexer = Rouge::Lexer.find_fancy(language, code) || Rouge::Lexers::PlainText
+        formatter.format(lexer.lex(code))
+      end
+
+      def albino_colorize(css_class, code, language)
+        # highlighting by Pygments, and adjust the html structure unity with Rouge.
+        Albino.colorize(code, language)
+          .sub('</pre>', '</code>').sub('</div>', '</pre>')
+          .sub('<pre>', "<code class=\"#{css_class}\">")
+          .sub('<div class="highlight">', '<pre>')
       end
 
       def initialize(opts={})
