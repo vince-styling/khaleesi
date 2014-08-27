@@ -2,7 +2,7 @@ module Khaleesi
   class Generator
 
     # The constructor accepts all settings then keep them as fields, lively in whole processing job.
-    def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern, date_pattern, diff_plus)
+    def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern, date_pattern, diff_plus, highlighter)
       # source directory path (must absolutely).
       @src_dir = src_dir
 
@@ -27,6 +27,9 @@ module Khaleesi
       # this action could be a huge benefit when you were creating
       # a new page and you want just to see what was she like at final.
       @diff_plus = diff_plus.eql?('true')
+
+      # indicating which syntax highlighter would be used, default is Rouge.
+      $use_albino = highlighter.eql?('albino')
     end
 
     # Main entry of Generator that generates all the pages of the site,
@@ -443,17 +446,18 @@ module Khaleesi
       end
     end
 
-    # intercept the Redcarpet processing, do the syntax highlighter with Rouge.
+    # intercept the Redcarpet processing, do the syntax highlighter with Rouge or Albino.
     class HTML < Redcarpet::Render::HTML
       def block_code(code, language)
-        css_class = $css_class + (language.to_s.strip.empty? ? '' : ' ' + language)
-        albino_colorize(css_class, code, language || 'text')
-        # rouge_colorize(css_class, code, language)
+        language = 'text' if language.to_s.strip.empty?
+        css_class = $css_class + ' ' + language
+        return albino_colorize(css_class, code, language) if $use_albino
+        rouge_colorize(css_class, code, language)
       end
 
       def rouge_colorize(css_class, code, language)
         formatter = Rouge::Formatters::HTML.new(:css_class => css_class, :line_numbers => $line_numbers)
-        lexer = Rouge::Lexer.find_fancy(language, code) || Rouge::Lexers::PlainText
+        lexer = Rouge::Lexer.find_fancy(language, code)
         formatter.format(lexer.lex(code))
       end
 

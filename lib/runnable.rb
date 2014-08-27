@@ -3,7 +3,7 @@ require 'Khaleesi'
 def construct
   Khaleesi::Generator.new(
       '/Users/vince/dev/vince_blog/vincestyling.github.com/', '/Users/vince/dev/vince_blog/site/',
-      'false', 'highlight', '%a %e %b %H:%M %Y', '%F', 'false'
+      'false', 'highlight', '%a %e %b %H:%M %Y', '%F', 'false', ''
   )
 end
 

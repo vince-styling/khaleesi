@@ -6,10 +6,12 @@ line_numbers="false"
 css_class="highlight"
 time_pattern="%Y-%m-%d %H:%M"
 date_pattern="%F"
+# highlighter="albino"
+highlighter=""
 
 if [[ "$1" == "generate" ]]; then
   diff=$([ "$2" == 'diff' ] && echo "true" || echo "false")
-  khaleesi generate --src-dir "$src_dir" --dest-dir "$dest_dir" --line-numbers $line_numbers --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" --diff-plus $diff
+  khaleesi generate --src-dir "$src_dir" --dest-dir "$dest_dir" --line-numbers $line_numbers --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" --diff-plus "$diff" --highlighter "$highlighter"
 
 elif [[ "$1" == "serve" ]]; then
   #nohup ruby -run -e httpd $dest_dir -p 9090 &

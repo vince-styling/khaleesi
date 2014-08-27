@@ -122,7 +122,7 @@ module Khaleesi
 
       def run
         return unless @input_file
-        print Generator.new('', '', '', 'highlight', '', '', '').handle_markdown(input)
+        print Generator.new('', '', '', 'highlight', '', '', '', '').handle_markdown(input)
       end
     end
 
@@ -401,7 +401,8 @@ module Khaleesi
         yield ''
         yield '--dest-dir       required, specify a destination directory path(must absolutely), all generated file will put there.'
         yield ''
-        yield '--line-numbers   (true|false)enable or disable Rouge generate source code line numbers, default is false.'
+        yield '--line-numbers   (true|false)enable or disable Rouge generate source code line numbers, default is false,'
+        yield '                 will be blind if you choose Albino as syntax highlighter.'
         yield ''
         yield '--css-class      specify source code syntax highlight\'s css class name, default is \'highlight\'.'
         yield ''
@@ -413,6 +414,8 @@ module Khaleesi
         yield ''
         yield '--diff-plus      only generate local repository(git) changed but has not yet been versioning\'s pages,'
         yield '                 this goal can be helpful when you frequently modify a page and want to see the generated effect such as writing a new blog post.'
+        yield ''
+        yield '--highlighter    (albino|rouge)specify which syntax highlighter would be used, default is Rouge.'
       end
 
       def self.parse(argv)
@@ -424,25 +427,29 @@ module Khaleesi
             :time_pattern => '%a %e %b %H:%M %Y',
             :date_pattern => '%F',
             :diff_plus => 'false',
+            :highlighter => 'rouge',
         }
 
+        argv = normalize_syntax(argv)
         until argv.empty?
           arg = argv.shift
           case arg
-            when '--src-dir'
+            when 'src-dir'
               opts[:src_dir] = argv.shift.dup
-            when '--dest-dir'
+            when 'dest-dir'
               opts[:dest_dir] = argv.shift.dup
-            when '--line-numbers'
+            when 'line-numbers'
               opts[:line_numbers] = argv.shift.dup
-            when '--css-class'
+            when 'css-class'
               opts[:css_class] = argv.shift.dup
-            when '--time-pattern'
+            when 'time-pattern'
               opts[:time_pattern] = argv.shift.dup
-            when '--date-pattern'
+            when 'date-pattern'
               opts[:date_pattern] = argv.shift.dup
-            when '--diff-plus'
+            when 'diff-plus'
               opts[:diff_plus] = argv.shift.dup
+            when 'highlighter'
+              opts[:highlighter] = argv.shift.dup
           end
         end
 
@@ -457,6 +464,7 @@ module Khaleesi
         @time_pattern = opts[:time_pattern]
         @date_pattern = opts[:date_pattern]
         @diff_plus = opts[:diff_plus]
+        @highlighter = opts[:highlighter]
       end
 
       def run
@@ -489,7 +497,8 @@ module Khaleesi
           return
         end
 
-        Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class, @time_pattern, @date_pattern, @diff_plus).generate
+        Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class,
+                      @time_pattern, @date_pattern, @diff_plus, @highlighter).generate
         handle_raw_files(site_dir)
       end
 
@@ -585,9 +594,9 @@ module Khaleesi
       out = []
       argv.each do |arg|
         case arg
-          when /^(-{,2})(\w+)=(.*)$/
+          when /^(-{,2})(\p{Graph}+)=(.*)$/
             out << $2 << $3
-          when /^(-{,2})(\w+)$/
+          when /^(-{,2})(\p{Graph}+)$/
             out << $2
           else
             out << arg
