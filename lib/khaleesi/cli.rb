@@ -122,7 +122,7 @@ module Khaleesi
 
       def run
         return unless @input_file
-        print Khaleesi.handle_markdown(input)
+        print Generator.new('', '', '', 'highlight', '', '', '').handle_markdown(input)
       end
     end
 
