@@ -525,8 +525,8 @@ module Khaleesi
 
       # if which one specify sequence, we shall force comparing by sequence.
       if self_sequence || other_sequence
-        self_sequence = 0 unless self_sequence
-        other_sequence = 0 unless other_sequence
+        self_sequence = self_sequence.to_i
+        other_sequence = other_sequence.to_i
 
         return 1 if self_sequence < other_sequence
         return 0 if self_sequence == other_sequence
