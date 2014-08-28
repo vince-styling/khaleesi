@@ -456,6 +456,7 @@ module Khaleesi
       end
 
       def pygments_colorize(css_class, code, language)
+        css_class << ' ' unless css_class.empty?
         Pygments.highlight(code, :lexer => language, :options => {:cssclass => css_class, :linenos => $line_numbers})
       end
 
