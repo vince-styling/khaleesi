@@ -29,7 +29,7 @@ module Khaleesi
       @diff_plus = diff_plus.eql?('true')
 
       # indicating which syntax highlighter would be used, default is Rouge.
-      $use_albino = highlighter.eql?('albino')
+      $use_pygments = highlighter.eql?('pygments')
     end
 
     # Main entry of Generator that generates all the pages of the site,
@@ -446,27 +446,23 @@ module Khaleesi
       end
     end
 
-    # intercept the Redcarpet processing, do the syntax highlighter with Rouge or Albino.
+    # intercept the Redcarpet processing, do the syntax highlighter with Rouge or Pygments.
     class HTML < Redcarpet::Render::HTML
       def block_code(code, language)
         language = 'text' if language.to_s.strip.empty?
         css_class = $css_class + ' ' + language
-        return albino_colorize(css_class, code, language) if $use_albino
+        return pygments_colorize(css_class, code, language) if $use_pygments
         rouge_colorize(css_class, code, language)
+      end
+
+      def pygments_colorize(css_class, code, language)
+        Pygments.highlight(code, :lexer => language, :options => {:cssclass => css_class, :linenos => $line_numbers})
       end
 
       def rouge_colorize(css_class, code, language)
         formatter = Rouge::Formatters::HTML.new(:css_class => css_class, :line_numbers => $line_numbers)
-        lexer = Rouge::Lexer.find_fancy(language, code)
+        lexer = Rouge::Lexer.find_fancy(language, code) || Rouge::Lexers::PlainText
         formatter.format(lexer.lex(code))
-      end
-
-      def albino_colorize(css_class, code, language)
-        # highlighting by Pygments, and adjust the html structure unity with Rouge.
-        Albino.colorize(code, language)
-          .sub('</pre>', '</code>').sub('</div>', '</pre>')
-          .sub('<pre>', "<code class=\"#{css_class}\">")
-          .sub('<div class="highlight">', '<pre>')
       end
 
       def initialize(opts={})

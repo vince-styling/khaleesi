@@ -18,4 +18,14 @@ def test_generator_all
   construct.generate
 end
 
-test_generator_all
+# test_generator_all
+
+def test_pygemnts
+  # puts Pygments.css(:style => 'emacs')
+
+  code = File.read('samplecode.java')
+  # puts Pygments.highlight(code, :lexer => 'java')
+  puts Pygments.highlight(code, :lexer => 'java', :options => {:cssclass => 'lingyunxiao', :linenos => true})
+end
+
+test_pygemnts

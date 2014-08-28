@@ -2,7 +2,7 @@ require 'pathname'
 require 'fileutils'
 
 require 'redcarpet'
-require 'albino'
+require 'pygments'
 require 'rouge'
 require 'time'
 

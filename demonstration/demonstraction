@@ -6,7 +6,7 @@ line_numbers="false"
 css_class="highlight"
 time_pattern="%Y-%m-%d %H:%M"
 date_pattern="%F"
-# highlighter="albino"
+# highlighter="pygments"
 highlighter=""
 
 if [[ "$1" == "generate" ]]; then
