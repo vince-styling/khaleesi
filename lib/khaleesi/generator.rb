@@ -473,7 +473,20 @@ module Khaleesi
       def rouge_colorize(css_class, code, language)
         formatter = Rouge::Formatters::HTML.new(:css_class => css_class, :line_numbers => $line_numbers)
         lexer = Rouge::Lexer.find_fancy(language, code) || Rouge::Lexers::PlainText
-        formatter.format(lexer.lex(code))
+        colored_html = formatter.format(lexer.lex(code))
+
+        if $line_numbers
+          colored_html.sub!('class="gutter gl" style="text-align: right"', 'class="linenos"')
+          colored_html.sub!(' style="border-spacing: 0"', '')
+          colored_html.sub!(' class="lineno"', '')
+          colored_html.sub!(' class="code"', '')
+        else
+          colored_html.sub!("<code class=\"#{css_class}\">", '')
+          colored_html.sub!('</code>', '')
+          colored_html.prepend("<div class=\"#{css_class}\">").concat('</div>')
+        end
+
+        colored_html
       end
 
       def initialize(opts={})
