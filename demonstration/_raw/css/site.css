@@ -92,40 +92,13 @@ p {
     clear: both;
 }
 
-pre {
-    line-height: 1.7em;
-}
-
-code {
-    font-family: "Source Code Pro", Consolas, Courier, monospace;
-    font-weight: 400;
-    font-size: 14px;
-    white-space: pre;
-    word-spacing: 0;
-}
-
-.theme {
-    width: 100%;
-}
-
 .theme h1 {
     font-size: 60px;
     margin-bottom: 16px;
 }
 
-.theme pre {
-    margin: 20px 0;
-    overflow: auto;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -ms-border-radius: 4px;
-    -o-border-radius: 4px;
-    border-radius: 4px;
-    padding: 12px;
-}
-
 .theme .chain_snippet {
-    padding: 0 10px 20px 10px;
+    padding: 10px 10px 20px 10px;
 }
 
 .theme .chain_snippet .prev {
@@ -140,10 +113,6 @@ code {
     margin-bottom: 20px
 }
 
-.theme-tabs .subject {
-    margin-bottom: 10px;
-}
-
 .theme-tabs .subject .link {
     text-decoration: none;
     font-weight: bold;
@@ -154,22 +123,31 @@ code {
 .theme-tabs .tab-content .codeleft {
     float: left;
     width: 460px;
-    overflow: auto;
-    margin-right: 10px;
 }
 
 .theme-tabs .tab-content .coderight {
     float: right;
     width: 460px;
-    overflow: auto;
 }
 
-.theme-tabs .tab-content pre {
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -ms-border-radius: 4px;
-    -o-border-radius: 4px;
-    border-radius: 4px;
+.highlight pre {
+    font-family: "Source Code Pro", Consolas, Courier, monospace;
+    white-space: pre;
+    font-weight: 400;
+    font-size: 14px;
+    word-spacing: 0;
+    line-height: 1.7em;
     padding: 12px;
-    height: 200px;
+}
+
+.highlight {
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: auto;
+    width: 100%;
+}
+
+.highlight table {
+    border-collapse: collapse;
+    border-spacing: 0;
 }

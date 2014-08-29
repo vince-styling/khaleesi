@@ -2,7 +2,7 @@
 
 src_dir=~/dev/khaleesi/demonstration
 dest_dir=~/dev/khaleesi/demonstration/site
-line_numbers="false"
+line_numbers="true"
 css_class="highlight"
 time_pattern="%Y-%m-%d %H:%M"
 date_pattern="%F"
