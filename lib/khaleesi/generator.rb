@@ -456,8 +456,18 @@ module Khaleesi
       end
 
       def pygments_colorize(css_class, code, language)
-        css_class << ' ' unless css_class.empty?
-        Pygments.highlight(code, :lexer => language, :options => {:cssclass => css_class, :linenos => $line_numbers})
+        colored_html = Pygments.highlight(code, :lexer => language, :options => {:cssclass => css_class, :linenos => $line_numbers})
+        return colored_html unless $line_numbers
+
+        # we'll have the html structure consistent whatever line numbers present or not.
+        colored_html.sub!(" class=\"#{css_class}table\"", '')
+        colored_html.sub!('<div class="linenodiv">', '')
+        colored_html.sub!('</div>', '')
+        colored_html.sub!(' class="code"', '')
+        root_elements = "<div class=\"#{css_class}\">"
+        colored_html.sub!(root_elements, '')
+        colored_html.prepend(root_elements).concat('</div>')
+        colored_html
       end
 
       def rouge_colorize(css_class, code, language)
