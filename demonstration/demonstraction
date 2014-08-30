@@ -13,6 +13,21 @@ if [[ "$1" == "generate" ]]; then
   diff=$([ "$2" == 'diff' ] && echo "true" || echo "false")
   khaleesi generate --src-dir "$src_dir" --dest-dir "$dest_dir" --line-numbers $line_numbers --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" --diff-plus "$diff" --highlighter "$highlighter"
 
+elif [[ "$1" == "build" ]]; then
+  temperary_dest_dir=~/tmp_site
+  mkdir $temperary_dest_dir
+
+  cd $src_dir
+
+  git checkout master
+
+  khaleesi build --src-dir "$src_dir" --dest-dir "$temperary_dest_dir" --line-numbers $line_numbers --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" --highlighter "$highlighter"
+
+  git checkout gh-pages
+
+  rsync -auv $temperary_dest_dir/ .
+  rm -fr $temperary_dest_dir
+
 elif [[ "$1" == "serve" ]]; then
   #nohup ruby -run -e httpd $dest_dir -p 9090 &
   ruby -run -e httpd $dest_dir -p 9090
