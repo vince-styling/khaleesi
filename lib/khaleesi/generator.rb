@@ -136,9 +136,8 @@ module Khaleesi
       while (foreach_snippet = parsed_text.match(regexp))
         foreach_snippet = handle_foreach_snippet(foreach_snippet)
 
-        # because the Regexp cannot skip a unhandled foreach snippet,
-        # so we claim every snippet must done successfully,
-        # and if not, we shall use blank as replacement.
+        # because the Regexp cannot skip a unhandled foreach snippet, so we claim every
+        # snippet must done successfully, and if not, we shall use blank instead.
         parsed_text.sub!(regexp, foreach_snippet.to_s)
       end
 
