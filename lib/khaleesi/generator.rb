@@ -40,7 +40,7 @@ module Khaleesi
       @decrt_regexp = produce_variable_regex('decorator')
       @title_regexp = produce_variable_regex('title')
       @var_regexp = /(\p{Word}+):(\p{Word}+)/
-      @doc_regexp = /‡{6,}/
+      @doc_regexp = /^‡{6,}$/
 
       @page_dir = "#{@src_dir}/_pages/"
       start_time = Time.now
@@ -383,10 +383,10 @@ module Khaleesi
     def extract_page_structure(page_file)
       document = IO.read(page_file)
 
-      if document.index(@doc_regexp)
-        conary = document.split(@doc_regexp)
-        @variable_stack.push(conary[0])
-        conary[1]
+      index = document.index(@doc_regexp).to_i
+      if index > 0
+        @variable_stack.push(document[0, index])
+        document[index..-1].sub(@doc_regexp, '').strip
       else
         # we must hold the variable stack.
         @variable_stack.push(nil)
