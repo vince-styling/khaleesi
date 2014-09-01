@@ -128,32 +128,34 @@ module Khaleesi
     end
 
     def parse_html_content(html_content, bore_content)
-      parsed_text = handle_html_content(html_content, '')
-
-
       # http://www.ruby-doc.org/core-2.1.0/Regexp.html#class-Regexp-label-Repetition use '.+?' to disable greedy match.
       regexp = /(#foreach\p{Blank}?\(\$(\p{Graph}+)\p{Blank}?:\p{Blank}?\$(\p{Graph}+)\p{Blank}?(asc|desc)?\p{Blank}?(\d*)\)(.+?)#end)/m
-      while (foreach_snippet = parsed_text.match(regexp))
+      while (foreach_snippet = html_content.match(regexp))
         foreach_snippet = handle_foreach_snippet(foreach_snippet)
 
         # because the Regexp cannot skip a unhandled foreach snippet, so we claim every
         # snippet must done successfully, and if not, we shall use blank instead.
-        parsed_text.sub!(regexp, foreach_snippet.to_s)
+        html_content.sub!(regexp, foreach_snippet.to_s)
       end
 
 
       regexp = /(#if\p{Blank}chain:(prev|next)\(\$(\p{Graph}+)\)(.+?)#end)/m
-      while (chain_snippet = parsed_text.match(regexp))
+      while (chain_snippet = html_content.match(regexp))
         chain_snippet = handle_chain_snippet(chain_snippet)
-        parsed_text.sub!(regexp, chain_snippet.to_s)
+        html_content.sub!(regexp, chain_snippet.to_s)
       end
+
+
+      # handle the html content after foreach and chain logical, to avoid that
+      # logical included after this handle, such as including markdown files.
+      html_content = handle_html_content(html_content, '')
 
 
       # we deal with decorator's content at final because it may slow down
       # the process even cause errors for the "foreach" and "chain" scripts.
-      parsed_text.sub!(/\$\{decorator:content}/, bore_content)
+      html_content.sub!(/\$\{decorator:content}/, bore_content)
 
-      parsed_text
+      html_content
     end
 
     def handle_html_content(html_content, added_scope)
