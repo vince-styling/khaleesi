@@ -89,7 +89,7 @@ module Khaleesi
         # isn't legal page if title missing
         next unless variables[@title_regexp, 3]
 
-        content = is_html_file(page_file) ? parse_html_file(page_file, '') : parse_markdown_file(page_file)
+        content = is_html_file(page_file) ? parse_html_file(page_file) : parse_markdown_file(page_file)
 
         page_path = File.expand_path(@dest_dir + gen_link(page_file, variables))
         page_dir_path = File.dirname(page_path)
@@ -117,7 +117,7 @@ module Khaleesi
       decorator ? parse_html_file("#{@src_dir}/_decorators/#{decorator.strip}.html", bore_content) : bore_content
     end
 
-    def parse_html_file(file_path, bore_content)
+    def parse_html_file(file_path, bore_content=nil)
       content = extract_page_structure(file_path)
 
       content = parse_html_content(content.to_s, bore_content)
@@ -148,17 +148,17 @@ module Khaleesi
 
       # handle the html content after foreach and chain logical, to avoid that
       # logical included after this handle, such as including markdown files.
-      html_content = handle_html_content(html_content, '')
+      html_content = handle_html_content(html_content)
 
 
       # we deal with decorator's content at final because it may slow down
       # the process even cause errors for the "foreach" and "chain" scripts.
-      html_content.sub!(/\$\{decorator:content}/, bore_content)
+      html_content.sub!(/\$\{decorator:content}/, bore_content) if bore_content
 
       html_content
     end
 
-    def handle_html_content(html_content, added_scope)
+    def handle_html_content(html_content, added_scope=nil)
       page_file = @page_stack.last
       parsed_text = ''
       sub_script = ''
@@ -220,7 +220,7 @@ module Khaleesi
                     else
                       text = nil
                       if form_value.eql?('content') and form_scope.eql?(added_scope)
-                        text = parse_html_file(page_file, '') if is_html_file(page_file)
+                        text = parse_html_file(page_file) if is_html_file(page_file)
                         text = parse_markdown_file(page_file) if is_markdown_file(page_file)
 
                       else
@@ -245,7 +245,7 @@ module Khaleesi
 
                   if is_html_file(match_page)
                     @page_stack.push match_page
-                    inc_content = parse_html_file(match_page, '')
+                    inc_content = parse_html_file(match_page)
                     @page_stack.pop
                   end
                   inc_content = parse_markdown_file(match_page) if is_markdown_file(match_page)
