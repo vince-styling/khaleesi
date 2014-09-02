@@ -326,7 +326,7 @@ module Khaleesi
           f.puts '    </head>'
           f.puts '    <body>'
           f.puts '        <div class="header">'
-          f.puts '            A khaleesi demonstraction site'
+          f.puts '            A khaleesi demonstration site'
           f.puts '        </div>'
           f.puts '        <div class="content">'
           f.puts '            ${decorator:content}'
