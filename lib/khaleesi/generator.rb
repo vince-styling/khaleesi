@@ -9,7 +9,7 @@ module Khaleesi
       # destination directory path (must absolutely).
       @dest_dir = dest_dir
 
-      # setting to tell Rouge output line numbers.
+      # setting to tell syntax highlighter output line numbers.
       $line_numbers = line_numbers.eql?('true')
 
       # a css class name which developer wants to customizable.
@@ -25,7 +25,7 @@ module Khaleesi
       # we just pick on those pages who changed but haven't commit
       # to git repository to generate, ignore the unchanged pages.
       # this action could be a huge benefit when you were creating
-      # a new page and you want just to see what was she like at final.
+      # a new page and you want just to focusing that page at all.
       @diff_plus = diff_plus.eql?('true')
 
       # indicating which syntax highlighter would be used, default is Rouge.
@@ -33,7 +33,7 @@ module Khaleesi
     end
 
     # Main entry of Generator that generates all the pages of the site,
-    # it scan the source directory files that fulfill the rule of page,
+    # it scan the source directory files that obey the rule of page,
     # evaluates and applies all predefine logical, writes the final
     # content into destination directory cascaded.
     def generate
