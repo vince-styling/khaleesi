@@ -491,7 +491,7 @@ module Khaleesi
       end
 
       def initialize(opts={})
-        # opts.store(:with_toc_data, true)
+        opts.store(:with_toc_data, true)
         # opts.store(:prettify, true)
         opts.store(:xhtml, true)
         super
