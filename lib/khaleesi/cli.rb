@@ -122,7 +122,7 @@ module Khaleesi
 
       def run
         return unless @input_file
-        print Generator.new('', '', '', 'highlight', '', '', '', '').handle_markdown(input)
+        print Generator.new('', '', '', 'highlight', '', '', '', '', '').handle_markdown(input)
       end
     end
 
@@ -218,12 +218,17 @@ module Khaleesi
           f.puts 'css_class="highlight"'
           f.puts 'time_pattern="%Y-%m-%d %H:%M"'
           f.puts 'date_pattern="%F"'
-          f.puts '# highlighter="pygments"'
           f.puts 'highlighter=""'
+          f.puts '# highlighter="pygments"'
+          f.puts 'toc_selection="h1,h2,h3"'
+          f.puts '# toc_selection="h1,h2,h3[unique]"'
+          f.puts ''
 
           f.puts 'if [[ "$1" == "generate" ]]; then'
           f.puts '  diff=$([ "$2" == \'diff\' ] && echo "true" || echo "false")'
-          f.puts '  khaleesi generate --src-dir "$src_dir" --dest-dir "$dest_dir" --line-numbers $line_numbers --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" --diff-plus "$diff" --highlighter "$highlighter"'
+          f.puts '  khaleesi generate --src-dir "$src_dir" --dest-dir "$dest_dir" --line-numbers $line_numbers \\'
+          f.puts '    --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" \\'
+          f.puts '    --diff-plus "$diff" --highlighter "$highlighter" --toc-selection "$toc_selection"'
           f.puts ''
           f.puts 'elif [[ "$1" == "build" ]]; then'
           f.puts '  temperary_dest_dir=~/tmp_site'
@@ -233,7 +238,9 @@ module Khaleesi
           f.puts ''
           f.puts '  git checkout master'
           f.puts ''
-          f.puts '  khaleesi build --src-dir "$src_dir" --dest-dir "$temperary_dest_dir" --line-numbers $line_numbers --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" --highlighter "$highlighter"'
+          f.puts '  khaleesi build --src-dir "$src_dir" --dest-dir "$dest_dir" --line-numbers $line_numbers \\'
+          f.puts '    --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" \\'
+          f.puts '    --highlighter "$highlighter" --toc-selection "$toc_selection"'
           f.puts ''
           f.puts '  git checkout gh-pages'
           f.puts ''
@@ -433,11 +440,24 @@ module Khaleesi
         yield '--diff-plus      (true|false) if given the value is \'true\', khaleesi will only generate local repository(git) changed'
         yield '                 but has not yet been versionadded\'s pages. If the whole site was too many pages or some pages had time-consuming'
         yield '                 operation in building, it would be expensively when you want just focusing on those pages you frequently changing on,'
-        yield '                 i.e you are writing a new post, you probably just care what looks would post be at all,'
+        yield '                 e.g you are writing a new post, you probably just care what looks would post be at all,'
         yield '                 so this setting let\'s avoid to generating extra pages which never changes.'
         yield ''
         yield '--highlighter    (pygments|rouge) tells khaleesi what syntax highlighter you prefer to use,'
         yield '                 every value except \'pygments\' means the same as \'rouge\'.'
+        yield ''
+        yield '--toc-selection  specify which headers will generate an "Table of Contents" id,'
+        yield '                 default is empty, that means disable TOC generation.'
+        yield '                 Enable values including "h1,h2,h3,h4,h5,h6", use comma as separator'
+        yield '                 to tell Khaleesi which html headers you want to have ids.'
+        yield '                 If enable to generate ids, Khaleesi will deal with header\'s text finally produce an id'
+        yield '                 that only contain [lowercase-alpha, digit, dashes, underscores] characters.'
+        yield '                 According this rule, Khaleesi may hunting down your texts when they don\'t write correctly.'
+        yield '                 That shall cause the generated text become meaningless and even very easy to being duplicate.'
+        yield '                 In case your texts aren\'t write in a good form, you still have a setting to force Khaleesi'
+        yield '                 to generate an unique ids instead that uncomfortable generated texts.'
+        yield '                 Just append "[unique]" identifier at the end, e.g "h1,h2[unique]", Khaleesi will generating'
+        yield '                 ids like these : "header-1", "header-2", "header-3", "header-4".'
       end
 
       def self.parse(argv)
@@ -450,6 +470,7 @@ module Khaleesi
             :date_pattern => '%F',
             :diff_plus => 'false',
             :highlighter => 'rouge',
+            :toc_selection => '',
         }
 
         argv = normalize_syntax(argv)
@@ -472,6 +493,8 @@ module Khaleesi
               opts[:diff_plus] = argv.shift.dup
             when 'highlighter'
               opts[:highlighter] = argv.shift.dup
+            when 'toc-selection'
+              opts[:toc_selection] = argv.shift.dup
           end
         end
 
@@ -487,6 +510,7 @@ module Khaleesi
         @date_pattern = opts[:date_pattern]
         @diff_plus = opts[:diff_plus]
         @highlighter = opts[:highlighter]
+        @toc_selection = opts[:toc_selection]
       end
 
       def run
@@ -519,8 +543,8 @@ module Khaleesi
           return
         end
 
-        Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class,
-                      @time_pattern, @date_pattern, @diff_plus, @highlighter).generate
+        Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class, @time_pattern,
+                      @date_pattern, @diff_plus, @highlighter ,@toc_selection).generate
         handle_raw_files(site_dir)
       end
 

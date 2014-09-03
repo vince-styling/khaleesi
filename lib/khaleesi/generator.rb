@@ -2,7 +2,8 @@ module Khaleesi
   class Generator
 
     # The constructor accepts all settings then keep them as fields, lively in whole processing job.
-    def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern, date_pattern, diff_plus, highlighter)
+    def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern,
+                   date_pattern, diff_plus, highlighter, toc_selection)
       # source directory path (must absolutely).
       @src_dir = src_dir
 
@@ -30,6 +31,9 @@ module Khaleesi
 
       # indicating which syntax highlighter would be used, default is Rouge.
       $use_pygments = highlighter.eql?('pygments')
+
+      # specify which headers will generate a "Table of Contents" id, leave empty means disable TOC generation.
+      $toc_selection = toc_selection
     end
 
     # Main entry of Generator that generates all the pages of the site,
@@ -57,6 +61,7 @@ module Khaleesi
         next unless File.readable? page_file
         next unless is_valid_file page_file
 
+        $toc_index = 0
         @page_stack.clear
         @page_stack.push File.expand_path(page_file)
         single_start_time = Time.now
@@ -411,15 +416,19 @@ module Khaleesi
       return relative_loc if is_html_file(relative_loc)
 
       # we shall use the page title to generating a link.
-      page_name = title
-      # delete else characters if not [alpha,number,underscore].
-      page_name.gsub!(/[^\p{Alnum}\p{Blank}_]/i, '')
-      # replace [blank] to dashes.
-      page_name.gsub!(/\p{Blank}/, '-')
-      page_name.downcase!
-      page_name.strip!
+      Generator.format_as_legal_link(title)
 
-      File.expand_path(relative_path << page_name << '.html')
+      File.expand_path(relative_path << title << '.html')
+    end
+
+    def self.format_as_legal_link(text)
+      # delete else of characters if not [alpha, number, whitespace, dashes, underscore].
+      text.gsub!(/[^0-9a-z \-_]/i, '')
+      # replace whitespace to dashes.
+      text.gsub!(' ', '-')
+      text.squeeze!('-')
+      text.downcase!
+      text.strip!
     end
 
     def self.fetch_create_time(page_file)
@@ -488,6 +497,34 @@ module Khaleesi
         end
 
         colored_html
+      end
+
+      # intercept header generation, decide which need to output id by settings.
+      def header(title, level)
+        is_unique = $toc_selection.to_s.include?('unique')
+        "\n<h%s%s>%s</h%s>\n" % [
+            level, if $toc_selection.to_s.include?(level.to_s)
+                     " id=\"#{is_unique ? unique_id : header_anchor(title)}\""
+                   else
+                     ''
+                   end, title, level]
+      end
+
+      # This method origin from redcarpet-3.1.2/ext/redcarpet/html.c:268.
+      def header_anchor(text)
+        # We must unescape HTML entities because
+        # Redcarpet escape them before.
+        text = CGI.unescapeHTML(text)
+
+        # delete markup entities.
+        text = text.gsub(/<\/?[^>]*>/, '')
+
+        Generator.format_as_legal_link(text)
+        text.length < 3 ? unique_id : text
+      end
+
+      def unique_id
+        "header-#{$toc_index = $toc_index + 1}"
       end
 
       def initialize(opts={})
