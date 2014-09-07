@@ -128,7 +128,7 @@ module Khaleesi
 
     class CreatePost < CLI
       def self.desc
-        'create a new post in pwd and generate a post identifier looks like "b36446316f29e2b97a7d"'
+        'create a new page in pwd with an unique identifier which composed by 20 characters like "b36446316f29e2b97a7d"'
       end
 
       def self.doc
@@ -161,12 +161,11 @@ module Khaleesi
         return unless @page_name
 
         open("#{Dir.pwd}/#{@page_name}.md", 'w') do |f|
-          f.puts 'title: <input post title>'
+          f.puts 'title: <input page title>'
           f.puts 'decorator: <input page decorator>'
-          f.puts 'description: <input page description>'
           f.puts "identifier: #{SecureRandom.hex(10)}"
           f.puts '‡‡‡‡‡‡‡‡‡‡‡‡‡‡'
-          f.puts ''
+          f.puts 'here is page content.'
         end
       end
     end
