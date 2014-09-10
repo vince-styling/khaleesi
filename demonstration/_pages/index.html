@@ -1,5 +1,6 @@
 title: Demonstration of Khaleesi
 decorator: basic
+identifier: 11e900509c48c9591c42
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
 <div class="anchor">
     <h1 id="title">geek highlighter markdown decorator with “Khaleesi”</h1>
@@ -24,3 +25,18 @@ decorator: basic
     <div id="btn">Table Of Contents</div>
     <div id="toc"></div>
 </div>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    // a unique identifier for each page where Disqus is present
+    var disqus_identifier = '${variable:identifier}';
+
+    // required: replace example with your forum shortname
+    var disqus_shortname = 'khaleesi';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
