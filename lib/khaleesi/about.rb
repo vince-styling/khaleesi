@@ -5,11 +5,17 @@ module Khaleesi
   def self.author
     'vince styling'
   end
+  def self.date
+    '2014-09-10'
+  end
   def self.site
-    'https://github.com/vince-styling/khaleesi'
+    'http://khaleesi.vincestyling.com/'
+  end
+  def self.summary
+    'Khaleesi is a static site generator write in Ruby.'
   end
   def self.about
-    puts 'Khaleesi is a site blog generator write by ruby.'
+    puts self.summary
     puts "site : #{self.site}."
     puts "author : #{self.author}."
     puts "version : #{self.version}."

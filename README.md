@@ -1,29 +1,7 @@
 # Khaleesi
 
-TODO: Write a gem description
+Khaleesi is a blog-aware or documentation-aware static site generator write in Ruby, looks like a text transformation engine to transforming your plain text into static websites. Supported markdown parser, series of decorators wrapping, code syntax highlighting, simple page script programming, page including, dataset traversing etc. Please visit my project's official site [khaleesi.vincestyling.com](http://khaleesi.vincestyling.com/) for more details.
 
-## Installation
+# License
 
-Add this line to your application's Gemfile:
-
-    gem 'khaleesi'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install khaleesi
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/khaleesi/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+Khaleesi is released under the MIT license. Please see the LICENSE file for more information.

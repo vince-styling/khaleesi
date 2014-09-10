@@ -30,7 +30,7 @@ elif [[ "$1" == "build" ]]; then
 
   git checkout gh-pages
 
-  rsync -auv $temperary_dest_dir/ .
+  rsync -acv $temperary_dest_dir/ .
   rm -fr $temperary_dest_dir
 
 elif [[ "$1" == "serve" ]]; then

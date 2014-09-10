@@ -1,12 +1,26 @@
 title: Demonstration of Khaleesi
 decorator: basic
 ‡‡‡‡‡‡‡‡‡‡‡‡‡‡
-<h1>geek highlighter markdown decorator is “Khaleesi”</h1>
-<h2>
-    <span>{</span>
-    Which theme is your favorite?
-    <span>}</span>
-</h2>
+<div class="anchor">
+    <h1 id="title">geek highlighter markdown decorator with “Khaleesi”</h1>
+</div>
+<div class="anchor">
+    <h2 id="themes-overview"><span>{</span>Which theme is your favorite?<span>}</span></h2>
+</div>
 #foreach ($theme : $themes_illustrates)
     ${theme:content}
 #end
+<div class="anchor">
+    <h2 id="introduction-of-khaleesi"><span>{</span>Introduction of Khaleesi<span>}</span></h2>
+</div>
+<div class="description github">
+    ${page:introduction}
+</div>
+<script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery-ui-1.11.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.tocify.min.js"></script>
+<script type="text/javascript" src="/js/core.js"></script>
+<div class="toc_container">
+    <div id="btn">Table Of Contents</div>
+    <div id="toc"></div>
+</div>

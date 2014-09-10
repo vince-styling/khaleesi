@@ -243,7 +243,7 @@ module Khaleesi
           f.puts ''
           f.puts '  git checkout gh-pages'
           f.puts ''
-          f.puts '  rsync -auv $temperary_dest_dir/ .'
+          f.puts '  rsync -acv $temperary_dest_dir/ .'
           f.puts ''
           f.puts '  rm -fr $temperary_dest_dir'
           f.puts ''

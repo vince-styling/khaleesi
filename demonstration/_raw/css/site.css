@@ -3,17 +3,75 @@
     padding: 0;
 }
 
+body, code {
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
 body {
     background-image: url(/images/bg.jpg);
-    color: #5c5855;
-    font-family: Helvetica, Arial, sans-serif;
     margin: 40px auto;
     width: 940px;
-    font-style: normal !important;
+    color: #5c5855;
+}
+
+.description h1 {
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.description h3 {
+    color: #149ad4;
+}
+
+.description h1, .description h2, .description h3 {
+    margin-bottom: 20px;
+}
+
+p {
+    margin-bottom: 20px;
+    line-height: 1.8em;
+    font-size: 17px;
+}
+
+.description ul {
+    margin-bottom: 20px;
+    list-style: disc inside;
+}
+
+.description ul li {
+    font-size: 17px;
+    line-height: 28px;
+}
+
+.description code {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0 0.5em;
+    font-size: 17px;
+    color: #d14;
+}
+
+.description table {
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.description table th,
+.description table td {
+    border: 2px solid #ddd;
+    padding: 6px 13px;
+    font-size: 17px;
+}
+
+.description table td {
+    line-height: 1.8em;
 }
 
 a {
     color: #149ad4;
+    font-size: 16px;
     font-weight: bold;
     text-decoration: none;
 }
@@ -22,20 +80,20 @@ a:hover {
     text-decoration: underline;
 }
 
-h1, h2 {
-    color: #443a33;
+.anchor h1, .anchor h2 {
     font-family: Chivo, "Helvetica Neue", Helvetica, Arial, serif;
+    text-align: center;
     font-weight: 900;
     line-height: 1.1;
-    text-align: center;
+    color: #443a33;
 }
 
-h1 {
+.anchor h1 {
     margin-bottom: 25px;
     font-size: 63px;
 }
 
-h2 {
+.anchor h2 {
     margin-top: 24px;
     color: #149ad4;
     font-size: 27px;
@@ -45,7 +103,7 @@ h2 {
     opacity: 1;
 }
 
-h2 span {
+.anchor h2 span {
     color: #e9e6e2;
     font-size: 70px;
     padding: 0 5px;
@@ -53,16 +111,11 @@ h2 span {
     top: 10px;
 }
 
-p {
-    line-height: 26px;
-    font-size: 16px;
-}
-
 .footer {
     width: 100%;
     margin: 0 auto;
     border-top: 2px solid #d5d5d5;
-    font-size: 13px;
+    font-size: 15px;
     color: #666;
     padding-top: 10px;
     padding-bottom: 100px;
@@ -93,12 +146,13 @@ p {
 }
 
 .theme h1 {
-    font-size: 60px;
     margin-bottom: 16px;
+    margin-top: 10px;
+    font-size: 50px;
 }
 
 .theme .chain_snippet {
-    padding: 10px 10px 20px 10px;
+    padding: 0 10px 20px 10px;
 }
 
 .theme .chain_snippet .prev {
@@ -111,6 +165,10 @@ p {
 
 .theme-tabs {
     margin-bottom: 20px
+}
+
+.theme-tabs .subject {
+    padding-bottom: 10px;
 }
 
 .theme-tabs .subject .link {
@@ -136,13 +194,13 @@ p {
     font-weight: 400;
     font-size: 14px;
     word-spacing: 0;
-    line-height: 1.7em;
+    line-height: 19px;
     padding: 12px;
 }
 
 .highlight {
+    margin-bottom: 20px;
     border-radius: 4px;
-    margin: 10px 0;
     overflow: auto;
     width: 100%;
 }
@@ -150,4 +208,51 @@ p {
 .highlight table {
     border-collapse: collapse;
     border-spacing: 0;
+    margin-bottom: 0;
+}
+
+.highlight table td {
+    border: none;
+    padding: 0 0;
+}
+
+.toc_container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.toc_container #btn {
+    text-align: center;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.toc_container #toc {
+    display: none;
+}
+
+.toc_container #toc a {
+    font-size: 14px;
+}
+
+.tocify ul, .tocify li {
+    list-style: none;
+    line-height: 30px;
+}
+
+.tocify li {
+    padding: 5px;
+}
+
+.tocify .active {
+    background-color: #F5F5F5;
+}
+
+.tocify-subheader {
+    text-indent: 10px;
+    display: none;
 }
