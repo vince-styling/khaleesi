@@ -386,7 +386,12 @@ module Khaleesi
 
     # Split by separators, extract page's variables and content.
     def extract_page_structure(page_file)
-      document = IO.read(page_file)
+      begin
+        document = IO.read(page_file)
+      rescue Exception => e
+        puts e.message
+        document = ''
+      end
 
       index = document.index(@doc_regexp).to_i
       if index > 0
