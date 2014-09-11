@@ -477,7 +477,7 @@ module Khaleesi
         # we'll have the html structure consistent whatever line numbers present or not.
         colored_html.sub!(" class=\"#{css_class}table\"", '')
         colored_html.sub!('<div class="linenodiv">', '')
-        colored_html.sub!('</div>', '')
+        colored_html.gsub!('</div>', '')
         colored_html.sub!(' class="code"', '')
         root_elements = "<div class=\"#{css_class}\">"
         colored_html.sub!(root_elements, '')
