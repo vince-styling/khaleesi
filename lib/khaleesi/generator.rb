@@ -495,6 +495,8 @@ module Khaleesi
           colored_html.sub!(' style="border-spacing: 0"', '')
           colored_html.sub!(' class="lineno"', '')
           colored_html.sub!(' class="code"', '')
+          colored_html.sub!('<tbody>', '')
+          colored_html.sub!('</tbody>', '')
         else
           colored_html.sub!("<code class=\"#{css_class}\">", '')
           colored_html.sub!('</code>', '')
