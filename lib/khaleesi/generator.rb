@@ -423,6 +423,9 @@ module Khaleesi
       # we shall use the page title to generating a link.
       Generator.format_as_legal_link(title)
 
+      # may hunting down all title's characters, use file name as safe way.
+      title = File.basename(page_path, '.*') if title.empty?
+
       File.expand_path(relative_path << title << '.html')
     end
 
