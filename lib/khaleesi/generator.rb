@@ -427,13 +427,13 @@ module Khaleesi
     end
 
     def self.format_as_legal_link(text)
+      text.strip!
       # delete else of characters if not [alpha, number, whitespace, dashes, underscore].
       text.gsub!(/[^0-9a-z \-_]/i, '')
       # replace whitespace to dashes.
       text.gsub!(' ', '-')
       text.squeeze!('-')
       text.downcase!
-      text.strip!
     end
 
     def self.fetch_create_time(page_file)
