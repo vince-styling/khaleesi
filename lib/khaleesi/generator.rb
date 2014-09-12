@@ -409,16 +409,12 @@ module Khaleesi
       title = variables[@title_regexp, 3] if variables
       return unless title
 
-      relative_loc = page_path[/(\p{Graph}+)\/_pages(\p{Graph}+)/, 2]
-      relative_path = File.dirname(relative_loc)
+      relative_path = File.dirname(page_path[/(\p{Graph}+)\/_pages(\p{Graph}+)/, 2])
       relative_path << '/' unless relative_path.end_with? '/'
 
       # fetch and use the pre-define page name if legal.
       page_name = variables[produce_variable_regex('slug'), 3]
       return File.expand_path(relative_path << page_name) unless page_name.strip.empty? if page_name
-
-      # use the file name if was html file.
-      return relative_loc if is_html_file(relative_loc)
 
       # we shall use the page title to generating a link.
       Generator.format_as_legal_link(title)

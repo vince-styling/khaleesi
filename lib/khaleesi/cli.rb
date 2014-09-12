@@ -366,6 +366,7 @@ module Khaleesi
         open(index_file, 'w') do |f|
           f.puts 'title: Khaleesi Index'
           f.puts 'decorator: basic'
+          f.puts 'slug: index.html'
           f.puts '‡‡‡‡‡‡‡‡‡‡‡‡‡‡'
           f.puts '<div class="primary">'
           f.puts '    <ul class="post_list">'
