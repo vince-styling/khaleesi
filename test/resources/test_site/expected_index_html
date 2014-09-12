@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="/css/site.css" type="text/css" media="screen">
+        <title>Khaleesi Index</title>
+    </head>
+    <body>
+        <div class="header">
+            A khaleesi demonstration site
+        </div>
+        <div class="content">
+            <div class="primary">
+    <h4>test for order by create time, ascending order, full list.</h4>
+    <h4>test many way of wrong variable expression syntax.</h4>
+    <ul class="post_list">
+        
+            <li title="netroid's introduction">
+                <p>$ { : } {} : ${ } ${--} ${:} ${} ${ $a{ } } ${variable:absent_var} ${page:absent_page}</p>
+                <a href="/posts/2013/netroids-introduction.html">netroid's introduction</a>
+                <p>Netroid is a Http Framework for Android that based on Volley.</p>
+            </li>
+        
+            <li title="khaleesi's introduction">
+                <p>$ { : } {} : ${ } ${--} ${:} ${} ${ $a{ } } ${variable:absent_var} ${page:absent_page}</p>
+                <a href="/posts/2014/khaleesis-introduction.html">khaleesi's introduction</a>
+                <p>Khaleesi is a static site generator that write by ruby.</p>
+            </li>
+        
+    </ul>
+
+    <h4>test sub-directory looping.</h4>
+    <ul class="post_list">
+        
+            <li title="Canon EOS 70D">
+                <p>subject: Canon EOS 70D</p>
+                <p>price: $1,449.00</p>
+                <p>Monitor Size : 3.0-inches (Screen aspect ratio of 3:2)</p>
+                <p>Weight: 1.66 lbs (753g)</p>
+            </li>
+        
+            <li title="Nikon D3100">
+                <p>subject: Nikon D3100</p>
+                <p>price: $349.00</p>
+                <p>Monitor Size : 3 in. diagonal</p>
+                <p>Weight: 16oz / 455g camera body only</p>
+            </li>
+        
+            <li title="Nikon D7100 DX-format">
+                <p>subject: Nikon D7100 DX-format</p>
+                <p>price: $1,096.95</p>
+                <p>Monitor Size : 8-cm/3.2-in</p>
+                <p>Weight: 1.7 lbs (765g) with battery and memory card</p>
+            </li>
+        
+            <li title="Nikon D3200 24.2MP">
+                <p>subject: Nikon D3200 24.2MP</p>
+                <p>price: $546.95</p>
+                <p>Monitor Size : 3-in./7.5-cm</p>
+                <p>Weight: Approx. 1 lb 1.8 oz/505 g</p>
+            </li>
+        
+    </ul>
+
+    <h4>test for order by sequence, ascending order, full list.</h4>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="github" class="link" href="/themes/github.html">github</a>
+    </div>
+    <div class="tab-content github clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="base16_solarized" class="link" href="/themes/base16_solarized.html">base16_solarized</a>
+    </div>
+    <div class="tab-content base16_solarized clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="base16_solarized_dark" class="link" href="/themes/base16_solarized_dark.html">base16_solarized_dark</a>
+    </div>
+    <div class="tab-content base16_solarized_dark clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="monokai_sublime" class="link" href="/themes/monokai_sublime.html">monokai_sublime</a>
+    </div>
+    <div class="tab-content monokai_sublime clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="monokai" class="link" href="/themes/monokai.html">monokai</a>
+    </div>
+    <div class="tab-content monokai clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+
+    <h4>test for order by sequence, ascending order, limit 2 items.</h4>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="github" class="link" href="/themes/github.html">github</a>
+    </div>
+    <div class="tab-content github clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="base16_solarized" class="link" href="/themes/base16_solarized.html">base16_solarized</a>
+    </div>
+    <div class="tab-content base16_solarized clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+
+    <h4>test for order by sequence, descending order, full list.</h4>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="monokai" class="link" href="/themes/monokai.html">monokai</a>
+    </div>
+    <div class="tab-content monokai clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="monokai_sublime" class="link" href="/themes/monokai_sublime.html">monokai_sublime</a>
+    </div>
+    <div class="tab-content monokai_sublime clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="base16_solarized_dark" class="link" href="/themes/base16_solarized_dark.html">base16_solarized_dark</a>
+    </div>
+    <div class="tab-content base16_solarized_dark clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="base16_solarized" class="link" href="/themes/base16_solarized.html">base16_solarized</a>
+    </div>
+    <div class="tab-content base16_solarized clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="github" class="link" href="/themes/github.html">github</a>
+    </div>
+    <div class="tab-content github clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+
+    <h4>test for order by sequence, descending order, limit 3 items.</h4>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="monokai" class="link" href="/themes/monokai.html">monokai</a>
+    </div>
+    <div class="tab-content monokai clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="monokai_sublime" class="link" href="/themes/monokai_sublime.html">monokai_sublime</a>
+    </div>
+    <div class="tab-content monokai_sublime clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+        <div class="theme-tabs">
+    <div class="subject">
+        <a id="base16_solarized_dark" class="link" href="/themes/base16_solarized_dark.html">base16_solarized_dark</a>
+    </div>
+    <div class="tab-content base16_solarized_dark clearfix">
+        <div class="highlight java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaHelloWorld</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">printOne</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printOne</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+    </div>
+</div>
+    
+</div>
+        </div>
+        <div class="footer">
+          <div class="left">
+            <div>Licensed under the <a href="http://choosealicense.com/licenses/mit/">MIT License</a></div>
+          </div>
+          <div class="right">
+            <div>A pure-ruby static site generator</div>
+            <div>Find <a href="https://github.com/vince-styling/khaleesi">khaleesi</a> in github</div>
+          </div>
+        </div>
+    </body>
+</html>

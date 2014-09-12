@@ -1,0 +1,49 @@
+title: Khaleesi Index
+decorator: basic
+slug: index.html
+‡‡‡‡‡‡‡‡‡‡‡‡‡‡
+<div class="primary">
+    <h4>test for order by create time, ascending order, full list.</h4>
+    <h4>test many way of wrong variable expression syntax.</h4>
+    <ul class="post_list">
+        #foreach ($post : $posts)
+            <li title="${post:title}">
+                <p>$ { : } {} : ${ } ${--} ${:} ${} ${ $a{ } } ${variable:absent_var} ${page:absent_page}</p>
+                <a href="${post:link}">${post:title}</a>
+                <p>${post:description}</p>
+            </li>
+        #end
+    </ul>
+
+    <h4>test sub-directory looping.</h4>
+    <ul class="post_list">
+        #foreach ($camera : $studio/cameras)
+            <li title="${camera:subject}">
+                <p>subject: ${camera:subject}</p>
+                <p>price: ${camera:price}</p>
+                <p>Monitor Size : ${camera:MonitorSize}</p>
+                <p>Weight: ${camera:Weight}</p>
+            </li>
+        #end
+    </ul>
+
+    <h4>test for order by sequence, ascending order, full list.</h4>
+    #foreach ($theme : $themes_illustrates)
+        ${theme:content}
+    #end
+
+    <h4>test for order by sequence, ascending order, limit 2 items.</h4>
+    #foreach ($theme : $themes_illustrates 2)
+        ${theme:content}
+    #end
+
+    <h4>test for order by sequence, descending order, full list.</h4>
+    #foreach ($theme : $themes_illustrates desc)
+        ${theme:content}
+    #end
+
+    <h4>test for order by sequence, descending order, limit 3 items.</h4>
+    #foreach ($theme : $themes_illustrates desc 3)
+        ${theme:content}
+    #end
+</div>

@@ -1,0 +1,20 @@
+<h1>Introduction</h1>
+
+<p>Khaleesi is a blog-aware or documentation-aware static site generator write in Ruby. Please visit my project&#39;s official site <a href="http://khaleesi.vincestyling.com/">khaleesi.vincestyling.com</a> for more details.</p>
+
+<h1>Installation</h1>
+
+<h2>Requirements</h2>
+<div class="highlight bash"><pre><span class="c"># =&gt; make sure the ruby version &gt;= 2.1.2</span>
+~ <span class="nv">$ </span>/usr/bin/ruby --version
+
+<span class="c"># =&gt; make sure the RubyGems version &gt;= 2.2.2</span>
+~ <span class="nv">$ </span>/usr/bin/gem --version
+</pre>
+</div>
+<h2>Install with RubyGems</h2>
+
+<p>Once you have Ruby and RubyGems up, you are ready to install Khaleesi. At the terminal prompt, you can simply run the following command to install :</p>
+<div class="highlight bash"><pre><span class="o">[</span>sudo] gem install khaleesi
+</pre>
+</div>

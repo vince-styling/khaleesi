@@ -1,0 +1,15 @@
+decorator: basic
+‡‡‡‡‡‡‡‡‡‡‡‡‡‡
+<div class="theme ${variable:title}">
+    <a href="/">Home</a>
+    <h1>Theme : ${variable:title}</h1>
+    ${decorator:content}
+    <div class="chain_snippet clearfix">
+        #if chain:prev($theme)
+            <div class="prev">Prev Theme : <a href="${theme:link}">${theme:title}</a></div>
+        #end
+        #if chain:next($theme)
+            <div class="next">Next Theme : <a href="${theme:link}">${theme:title}</a></div>
+        #end
+    </div>
+</div>

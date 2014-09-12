@@ -2,52 +2,44 @@ module Khaleesi
   class Generator
 
     # The constructor accepts all settings then keep them as fields, lively in whole processing job.
-    def initialize(src_dir, dest_dir, line_numbers, css_class, time_pattern,
-                   date_pattern, diff_plus, highlighter, toc_selection)
+    def initialize(opts={})
       # source directory path (must absolutely).
-      @src_dir = src_dir
+      @src_dir = opts[:src_dir].to_s
 
       # destination directory path (must absolutely).
-      @dest_dir = dest_dir
+      @dest_dir = opts[:dest_dir].to_s
 
       # setting to tell syntax highlighter output line numbers.
-      $line_numbers = line_numbers.eql?('true')
+      $line_numbers = opts[:line_numbers].to_s.eql?('true')
 
       # a css class name which developer wants to customizable.
-      $css_class = css_class
+      $css_class = opts[:css_class] || 'highlight'
 
       # a full time pattern used to including date and time like '2014-08-22 16:45'.
       # see http://www.ruby-doc.org/core-2.1.2/Time.html#strftime-method for pattern details.
-      @time_pattern = time_pattern
+      @time_pattern = opts[:time_pattern] || '%a %e %b %H:%M %Y'
 
       # a short time pattern used to display only date like '2014-08-22'.
-      @date_pattern = date_pattern
+      @date_pattern = opts[:date_pattern] || '%F'
 
       # we just pick on those pages who changed but haven't commit
       # to git repository to generate, ignore the unchanged pages.
       # this action could be a huge benefit when you were creating
       # a new page and you want just to focusing that page at all.
-      @diff_plus = diff_plus.eql?('true')
+      @diff_plus = opts[:diff_plus].to_s.eql?('true')
 
       # indicating which syntax highlighter would be used, default is Rouge.
-      $use_pygments = highlighter.eql?('pygments')
+      $use_pygments = opts[:highlighter].to_s.eql?('pygments')
 
       # specify which headers will generate a "Table of Contents" id, leave empty means disable TOC generation.
-      $toc_selection = toc_selection
-    end
+      $toc_selection = opts[:toc_selection].to_s
 
-    # Main entry of Generator that generates all the pages of the site,
-    # it scan the source directory files that obey the rule of page,
-    # evaluates and applies all predefine logical, writes the final
-    # content into destination directory cascaded.
-    def generate
       @decrt_regexp = produce_variable_regex('decorator')
       @title_regexp = produce_variable_regex('title')
       @var_regexp = /(\p{Word}+):(\p{Word}+)/
       @doc_regexp = /^‡{6,}$/
 
       @page_dir = "#{@src_dir}/_pages/"
-      start_time = Time.now
 
       # a cascaded variable stack that storing a set of page's variable while generating,
       # able for each handling page to grab it parent's variable and parent's variable.
@@ -56,6 +48,14 @@ module Khaleesi
       # a queue that storing valid pages, use to avoid invalid page(decorator file)
       # influence the page link, page times generation.
       @page_stack = Array.new
+    end
+
+    # Main entry of Generator that generates all the pages of the site,
+    # it scan the source directory files that obey the rule of page,
+    # evaluates and applies all predefine logical, writes the final
+    # content into destination directory cascaded.
+    def generate
+      start_time = Time.now
 
       Dir.glob("#{@page_dir}/**/*") do |page_file|
         next unless File.readable? page_file
@@ -507,9 +507,9 @@ module Khaleesi
 
       # intercept header generation, decide which need to output id by settings.
       def header(title, level)
-        is_unique = $toc_selection.to_s.include?('unique')
+        is_unique = $toc_selection.include?('unique')
         "\n<h%s%s>%s</h%s>\n" % [
-            level, if $toc_selection.to_s.include?(level.to_s)
+            level, if $toc_selection.include?(level.to_s)
                      " id=\"#{is_unique ? unique_id : header_anchor(title)}\""
                    else
                      ''

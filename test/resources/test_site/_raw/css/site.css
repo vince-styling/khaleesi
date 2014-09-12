@@ -1,0 +1,340 @@
+* {margin:0; padding:0;}
+body {margin:40px auto; width:940px; line-height:1.8em;}
+a {color:#149ad4; text-decoration:none;}
+a:hover {text-decoration:underline;}
+.header { font-size: 18px; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #ddd; box-shadow: 0 1px 0 rgba(255,255,255,0.5);}
+.content { font-size: 20px; padding-bottom: 10px; }
+.content .primary .post_list {
+  list-style-type: none;
+}
+.content .primary .post_list li {
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+.content .primary .post_list li p {
+  color: #5c5855;
+  font-size: 16px;
+}
+.content .primary .post_list li span {
+  color: #60E;
+  font-size: 12px;
+}
+.content .post_title {
+  margin: 10px 0;
+  font-size: 32px;
+  text-align: center;
+}
+.footer {
+  width: 100%;
+  margin: 0 auto;
+  border-top: 2px solid #d5d5d5;
+  font-size: 13px;
+  color: #666;
+  padding-top: 10px;
+  padding-bottom: 60px;
+  line-height: 1.8em;
+}
+.footer .left {
+  float: left;
+}
+.footer .right {
+  float: right;
+}
+.footer .right div {
+  text-align: right;
+}
+
+.highlight pre {
+    font-family: "Source Code Pro", Consolas, Courier, monospace;
+    white-space: pre;
+    font-weight: 400;
+    font-size: 14px;
+    word-spacing: 0;
+    line-height: 19px;
+    padding: 12px;
+}
+
+.highlight {
+    margin-bottom: 20px;
+    border-radius: 4px;
+    overflow: auto;
+    width: 100%;
+}
+
+.highlight table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 0;
+}
+
+.highlight table td {
+    border: none;
+    padding: 0 0;
+}
+
+.highlight .linenos {
+    border-right: 1px solid #ddd;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    background-color: #f8f8ff;
+    text-align: right;
+    color: #bebec5;
+}
+
+.highlight {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    color: #333333;
+}
+
+.highlight .cm {
+    color: #999988;
+    font-style: italic;
+}
+
+.highlight .cp {
+    color: #999999;
+}
+
+.highlight .c1 {
+    color: #999988;
+    font-style: italic;
+}
+
+.highlight .cs {
+    color: #999999;
+    font-style: italic;
+}
+
+.highlight .c, .highlight .cd {
+    color: #999988;
+    font-style: italic;
+}
+
+.highlight .err {
+    color: #a61717;
+    background-color: #e3d2d2;
+}
+
+.highlight .gd {
+    color: #000000;
+    background-color: #ffdddd;
+}
+
+.highlight .ge {
+    color: #000000;
+    font-style: italic;
+}
+
+.highlight .gr {
+    color: #aa0000;
+}
+
+.highlight .gh {
+    color: #999999;
+}
+
+.highlight .gi {
+    color: #000000;
+    background-color: #ddffdd;
+}
+
+.highlight .go {
+    color: #888888;
+}
+
+.highlight .gp {
+    color: #555555;
+}
+
+.highlight .gs {
+}
+
+.highlight .gu {
+    color: #aaaaaa;
+}
+
+.highlight .gt {
+    color: #aa0000;
+}
+
+.highlight .kc {
+    color: #000000;
+}
+
+.highlight .kd {
+    color: #000000;
+}
+
+.highlight .kn {
+    color: #000000;
+}
+
+.highlight .kp {
+    color: #000000;
+}
+
+.highlight .kr {
+    color: #000000;
+}
+
+.highlight .kt {
+    color: #445588;
+}
+
+.highlight .k, .highlight .kv {
+    color: #000000;
+}
+
+.highlight .mf {
+    color: #009999;
+}
+
+.highlight .mh {
+    color: #009999;
+}
+
+.highlight .il {
+    color: #009999;
+}
+
+.highlight .mi {
+    color: #009999;
+}
+
+.highlight .mo {
+    color: #009999;
+}
+
+.highlight .m, .highlight .mb, .highlight .mx {
+    color: #009999;
+}
+
+.highlight .sb {
+    color: #d14;
+}
+
+.highlight .sc {
+    color: #d14;
+}
+
+.highlight .sd {
+    color: #d14;
+}
+
+.highlight .s2 {
+    color: #d14;
+}
+
+.highlight .se {
+    color: #d14;
+}
+
+.highlight .sh {
+    color: #d14;
+}
+
+.highlight .si {
+    color: #d14;
+}
+
+.highlight .sx {
+    color: #d14;
+}
+
+.highlight .sr {
+    color: #009926;
+}
+
+.highlight .s1 {
+    color: #d14;
+}
+
+.highlight .ss {
+    color: #990073;
+}
+
+.highlight .s {
+    color: #d14;
+}
+
+.highlight .na {
+    color: #008080;
+}
+
+.highlight .bp {
+    color: #999999;
+}
+
+.highlight .nb {
+    color: #0086B3;
+}
+
+.highlight .nc {
+    color: #445588;
+}
+
+.highlight .no {
+    color: #008080;
+}
+
+.highlight .nd {
+    color: #3c5d5d;
+}
+
+.highlight .ni {
+    color: #800080;
+}
+
+.highlight .ne {
+    color: #990000;
+}
+
+.highlight .nf {
+    color: #990000;
+}
+
+.highlight .nl {
+    color: #990000;
+}
+
+.highlight .nn {
+    color: #555555;
+}
+
+.highlight .nt {
+    color: #000080;
+}
+
+.highlight .n {
+    color: #333333;
+}
+
+.highlight .vc {
+    color: #008080;
+}
+
+.highlight .vg {
+    color: #008080;
+}
+
+.highlight .vi {
+    color: #008080;
+}
+
+.highlight .nv {
+    color: #008080;
+}
+
+.highlight .ow {
+    color: #000000;
+}
+
+.highlight .o {
+    color: #000000;
+}
+
+.highlight .w {
+    color: #bbbbbb;
+}

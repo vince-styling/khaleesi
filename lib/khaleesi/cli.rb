@@ -122,7 +122,7 @@ module Khaleesi
 
       def run
         return unless @input_file
-        print Generator.new('', '', '', 'highlight', '', '', '', '', '').handle_markdown(input)
+        print Generator.new.handle_markdown(input)
       end
     end
 
@@ -160,13 +160,16 @@ module Khaleesi
       def run
         return unless @page_name
 
-        open("#{Dir.pwd}/#{@page_name}.md", 'w') do |f|
+        page_path = "#{Dir.pwd}/#{@page_name}.md"
+        open(page_path, 'w') do |f|
           f.puts 'title: <input page title>'
           f.puts 'decorator: <input page decorator>'
           f.puts "identifier: #{SecureRandom.hex(10)}"
           f.puts '‡‡‡‡‡‡‡‡‡‡‡‡‡‡'
           f.puts 'here is page content.'
         end
+
+        puts "A post page was created : #{page_path}."
       end
     end
 
@@ -391,7 +394,7 @@ module Khaleesi
           f.puts ''
           f.puts 'Khaleesi is a static site generator that write by ruby, supported markdown parser, multiple decorators inheritance, simple page programming, page including, page dataset configurable etc.'
           f.puts ''
-          f.puts 'please check [this](https://github.com/vince-styling/khaleesi) for more details.'
+          f.puts 'please check [this](http://khaleesi.vincestyling.com/) for more details.'
         end
 
         post_file = create_file_p("#{pages_dir}/2013", 'netroid-introduction', 'md')
@@ -408,19 +411,24 @@ module Khaleesi
           f.puts ''
           f.puts 'please check [this](https://github.com/vince-styling/Netroid) for more details.'
         end
+
+        puts "A sample site of Khaleesi was built in #{root_dir}."
       end
     end
 
     class Generate < CLI
-      @cmd_name = 'generate'
       def self.desc
-        "#{@cmd_name} whole site for specify directory"
+        "#{cmd_name} whole site for specify directory"
+      end
+
+      def self.cmd_name
+        self.name.to_s[/(.+)::(.+)/, 2].downcase
       end
 
       def self.doc
         return enum_for(:doc) unless block_given?
 
-        yield "usage: khaleesi #{@cmd_name} [options...]"
+        yield "usage: khaleesi #{cmd_name} [options...]"
         yield ''
         yield '--src-dir        required, specify a source directory path(must be absolutely), khaleesi shall generating via this site source.'
         yield ''
@@ -461,18 +469,7 @@ module Khaleesi
       end
 
       def self.parse(argv)
-        opts = {
-            :src_dir => nil,
-            :dest_dir => nil,
-            :line_numbers => 'false',
-            :css_class => 'highlight',
-            :time_pattern => '%a %e %b %H:%M %Y',
-            :date_pattern => '%F',
-            :diff_plus => 'false',
-            :highlighter => 'rouge',
-            :toc_selection => '',
-        }
-
+        opts = {}
         argv = normalize_syntax(argv)
         until argv.empty?
           arg = argv.shift
@@ -502,55 +499,45 @@ module Khaleesi
       end
 
       def initialize(opts={})
-        @src_dir = opts[:src_dir]
-        @dest_dir = opts[:dest_dir]
-        @line_numbers = opts[:line_numbers]
-        @css_class = opts[:css_class]
-        @time_pattern = opts[:time_pattern]
-        @date_pattern = opts[:date_pattern]
-        @diff_plus = opts[:diff_plus]
-        @highlighter = opts[:highlighter]
-        @toc_selection = opts[:toc_selection]
+        @opts = opts
       end
 
       def run
-        unless @src_dir and File.directory?(@src_dir) and File.readable?(@src_dir)
-          puts "source directory : #{@src_dir} invalid!"
-          return
+        details = " Please point \"khaleesi help #{self.class.to_s[/(.+)::(.+)/, 2].downcase}\" in terminal for more details."
+
+        dest_dir = @opts[:dest_dir]
+        src_dir = @opts[:src_dir]
+
+        unless src_dir and File.directory?(src_dir) and File.readable?(src_dir)
+          abort "Source directory : #{src_dir} invalid." << details
         end
 
-        unless @dest_dir and File.directory?(@dest_dir) and File.writable?(@dest_dir)
-          puts "destination directory : #{@dest_dir} invalid!"
-          return
+        unless dest_dir and File.directory?(dest_dir) and File.writable?(dest_dir)
+          abort "Destination directory : #{dest_dir} invalid." << details
         end
 
-        @src_dir << '/'
-        site_dir = @src_dir + '_decorators'
+        site_dir = src_dir + '/_decorators'
         unless File.directory?(site_dir)
-          puts "source directory : #{@src_dir} haven't _decorators folder!"
-          return
+          abort "Source directory : #{src_dir} haven't _decorators folder."
         end
 
-        site_dir = @src_dir + '_pages'
+        site_dir = src_dir + '/_pages'
         unless File.directory?(site_dir)
-          puts "source directory : #{@src_dir} haven't _pages folder!"
-          return
+          abort "Source directory : #{src_dir} haven't _pages folder."
         end
 
-        site_dir = @src_dir + '_raw'
+        site_dir = src_dir + '/_raw'
         unless File.directory?(site_dir)
-          puts "source directory : #{@src_dir} haven't _raw folder!"
-          return
+          abort "Source directory : #{src_dir} haven't _raw folder."
         end
 
-        Generator.new(@src_dir, @dest_dir, @line_numbers, @css_class, @time_pattern,
-                      @date_pattern, @diff_plus, @highlighter ,@toc_selection).generate
+        Generator.new(@opts).generate
         handle_raw_files(site_dir)
       end
 
       def handle_raw_files(raw_dir)
         # make symbolic links of "_raw" directory
-        Dir.chdir(@dest_dir) do
+        Dir.chdir(@opts[:dest_dir]) do
           %x[ln -sf #{raw_dir << '/*'} .]
         end
         # FileUtils.ln_s site_dir << '/*', @dest_dir, :verbose => true
@@ -558,9 +545,8 @@ module Khaleesi
     end
 
     class Build < Generate
-      @cmd_name = 'build'
       def handle_raw_files(raw_dir)
-        FileUtils.cp_r raw_dir << '/.', @dest_dir, :verbose => false
+        FileUtils.cp_r raw_dir << '/.', @opts[:dest_dir], :verbose => false
       end
     end
 
