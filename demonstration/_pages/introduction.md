@@ -567,23 +567,23 @@ Khaleesi pre-defined a variety of data variable to simplify page programming, Th
 
 ## The page link
 
-How Khaleesi generate your web page's path depends on where you put that page files in. e.g. you have a page file inside `_pages/post/2014/`, you'll view that page like **http://.../post/2014/PAGE-NAME**.
+How Khaleesi generate your web page's path depends on where you put that page files in. e.g. you have a page file that inside the `_pages/post/2014/` folder, you'll view that page in browser is **http://.../post/2014/PAGE-NAME**.
 
-For the `PAGE-NAME`, Khaleesi supports a flexible way to resulting them. The directest approach of specify the page name you want to view in browser is declare a variable called `slug`. Given a page path is `/_pages/posts/2014/khaleesi.html` :
+For the `PAGE-NAME`, Khaleesi supports a flexible way to resulting them. The directest approach of specify the page name you want to view is declare a variable named `slug`. Given a page path is `/_pages/posts/2014/khaleesi_info.html` :
 
 ```
 title: Khaleesi's introduction
+slug: mypost.html
 decorator: basic
-slug: index.html
 ‡‡‡‡‡‡‡‡‡‡ 
 here's page content.
 ```
 
-Khaleesi will use `index.html` as this page's name, then the final url link would be **http://.../posts/2014/index.html**.
+Khaleesi will use `mypost.html` as this page's name, then the final url link would be **http://.../posts/2014/mypost.html**.
 
-If page was **html** format, Khaleesi will use file name as page name when `slug` absent, this time the final url link would be **http://.../posts/2014/khaleesi.html**.
+**Slug** variable was the preferred choice to naming a page, and if he **absent**, Khaleesi will take page's **title** variable as source to generating the page name but delete else of characters if not [alpha, digit, dash, underscore], so the final url link would be **http://.../posts/2014/khaleesis-introduction.html**.
 
-If page was **markdown** format, Khaleesi would use **title** variable to generate a page name but delete else of characters if not [alpha, digit, dashes, underscores], so **http://.../posts/2014/khaleesis-introduction.html** would be the final link.
+Across in the Khaleesi process, the file name of page mostly not matter, excepted in this time. That dealing with **title** variable may hunt down the entire string causing it become empty while generating page name. e.g. your title is **一些一些情**, a chinese text won't be a wise file name or page name either. Make us hold nothing about page name in our hands, so the last factor we could rely on is the file name, thus the final url link would be **http://.../posts/2014/khaleesi_info.html**.
 
 
 
