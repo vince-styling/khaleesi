@@ -549,7 +549,7 @@ With this approach, you can navigate users further to learn your site. That may 
 
 ## Variables
 
-A legal variable must obey this pattern `${[scope]:[name]}`, e.g. **${variable:title}**. Throughout handling a page task, all relevant page's variable shall managing with a **Stack**. Khaleesi locating a variable in the Stack one by one until it find out. This principle enable us to find a variable from its parents if needed.
+A legal variable must obey this pattern `${[scope]:[name]}`, whether variable's **scope** or **name**, they remain case sensitive and only accepted non-blank characters. e.g. **${variable:Name}** would be differential treatment with **${variable:name}**, and writing as **${variable:safety car}** is invalid.
 
 Khaleesi pre-defined a variety of data variable to simplify page programming, The following is a reference of them.
 
@@ -562,6 +562,8 @@ Khaleesi pre-defined a variety of data variable to simplify page programming, Th
 | link | variable, customize_scope | ${variable:link}, ${theme:link} | Generate file's URL if that file is valid web page(a valid web page must declare **title** and **decorator** variable). The URL of file without the domain, but with a leading slash, e.g. `/posts/2014/my-post.html`. |
 | content | decorator, customize_scope | ${decorator:content}, ${theme:content} | Inject the file's rendered content. Scoped to **decorator** means inject that file's content which declare this decorator now processing on as decorator. Scoped to **customize_scope** such as **theme** means process and output this scope pointing file's content, focus on **foreach** and **chain** logical for more details. |
 | [page_name] | page | ${page:introduction} | A complex page usually have a few part of contents, Khaleesi allows we to assembly other files into a complete web page. We can specify the file name via variable name, for example is **introduction**. Khaleesi will locating a file named **introduction.html** or **introduction.md** in your site, then process its content to output by its formats. |
+
+Throughout handling a page task, some pages might be load while a page need them to evaluating. All these relevant page's variable shall managing with a **Stack**, abandon instantly if that page was done. Khaleesi locating a variable in the Stack one by one until it find out. This principle enable us to find a variable from its parents if needed.
 
 
 
