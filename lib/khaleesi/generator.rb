@@ -470,7 +470,12 @@ module Khaleesi
       end
 
       def pygments_colorize(css_class, code, language)
-        colored_html = Pygments.highlight(code, :lexer => language, :options => {:cssclass => css_class, :linenos => $line_numbers})
+        opts = {:cssclass => css_class, :linenos => $line_numbers}
+        begin
+          colored_html = Pygments.highlight(code, :lexer => language, :options => opts)
+        rescue MentosError
+          colored_html = Pygments.highlight(code, :lexer => 'text', :options => opts)
+        end
         return colored_html unless $line_numbers
 
         # we'll have the html structure consistent whatever line numbers present or not.
