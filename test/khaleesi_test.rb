@@ -156,4 +156,16 @@ class KhaleesiTest < Test::Unit::TestCase
     assert_equal html.header(title, 3), "\n<h3>#{title}</h3>\n"
     assert_equal html.header(title, '4'), "\n<h4>#{title}</h4>\n"
   end
+
+
+
+  def test_identifier_uniquify
+    require 'set'
+    identifier_set = Set.new
+    times = 100000
+    times.times do
+      identifier_set << SecureRandom.hex(10)
+    end
+    assert_equal identifier_set.size, times
+  end
 end
