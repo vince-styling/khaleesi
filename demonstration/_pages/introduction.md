@@ -128,7 +128,7 @@ A basic Khaleesi site usually looks something like this :
 An overview of what each of these does :
 
 | File / Directory | Description |
-| :-------------: | :------------- |
+| :-------------: | ------------- |
 | `_decorators` | These are the templates that wrap pages. All decorator files can be mixed and reuse, they chosen on file-by-file inject content since page indicating the root decorator. |
 | `_pages` | Well-formatted site data folder where all pages you want to display should be placed here. This means that you can publish and maintain a site simply by managing a folder of text-files on your computer. The Khaleesi engine will load all files(ends with `.md` or `.html` in general) and generating as website in this directory. |
 | `posts` | Your dynamic content, the permalinks can be customized for each post, will explain further about how to do it. |
