@@ -235,34 +235,32 @@ The list above show you all the available settings for Khaleesi, these various o
 ```bash
 #!/bin/bash
 
-src_dir=~/dev/khaleesi/demonstration
-dest_dir=~/dev/khaleesi/demonstration/site
+prj_dir=~/dev/khaleesi
+src_dir=$prj_dir/demonstration
+dest_dir=$src_dir/site
 line_numbers="true"
 css_class="highlight"
 time_pattern="%Y-%m-%d %H:%M"
 date_pattern="%F"
-highlighter=""
-# highlighter="pygments"
 toc_selection="h1,h2"
-# toc_selection="h1,h2[unique]"
 
 if [[ "$1" == "generate" ]]; then
   diff=$([ "$2" == 'diff' ] && echo "true" || echo "false")
   khaleesi generate --src-dir "$src_dir" --dest-dir "$dest_dir" --line-numbers $line_numbers \
     --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" \
-    --diff-plus "$diff" --highlighter "$highlighter" --toc-selection "$toc_selection"
+    --diff-plus "$diff" --toc-selection "$toc_selection"
 
 elif [[ "$1" == "build" ]]; then
   temperary_dest_dir=~/tmp_site
   mkdir $temperary_dest_dir
 
-  cd $src_dir
+  cd $prj_dir
 
   git checkout master
 
-  khaleesi build --src-dir "$src_dir" --dest-dir "$temperary_dest_dir" --line-numbers $line_numbers \
-    --css-class $css_class --time-pattern "$time_pattern" --date-pattern "$date_pattern" \
-    --highlighter "$highlighter" --toc-selection "$toc_selection"
+  khaleesi build --src-dir "$src_dir" --dest-dir "$temperary_dest_dir" \
+    --line-numbers $line_numbers --css-class $css_class --time-pattern "$time_pattern" \
+    --date-pattern "$date_pattern" --highlighter pygments --toc-selection "$toc_selection"
 
   git checkout gh-pages
 

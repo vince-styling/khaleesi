@@ -1,7 +1,8 @@
 #!/bin/bash
 
-src_dir=~/dev/khaleesi/demonstration
-dest_dir=~/dev/khaleesi/demonstration/site
+prj_dir=~/dev/khaleesi
+src_dir=$prj_dir/demonstration
+dest_dir=$src_dir/site
 line_numbers="true"
 css_class="highlight"
 time_pattern="%Y-%m-%d %H:%M"
@@ -18,7 +19,7 @@ elif [[ "$1" == "build" ]]; then
   temperary_dest_dir=~/tmp_site
   mkdir $temperary_dest_dir
 
-  cd $src_dir
+  cd $prj_dir
 
   git checkout master
 
