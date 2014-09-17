@@ -561,12 +561,60 @@
 <h2 id="install-with-rubygems">Install with RubyGems</h2>
 
 <p>Once you have Ruby and RubyGems up, you are ready to install Khaleesi. At the terminal prompt, you can simply run the following command to install :</p>
-<div class="highlight bash"><table><tr><td class="linenos"><pre>1</pre></td><td><pre><span class="o">[</span>sudo<span class="o">]</span> gem install khaleesi
+<div class="highlight bash"><table><tr><td class="linenos"><pre>1
+2
+3
+4
+5
+6</pre></td><td><pre>~ <span class="nv">$ </span>gem install khaleesi
+Successfully installed khaleesi-0.1.0
+Parsing documentation <span class="k">for</span> khaleesi-0.1.0
+Installing ri documentation <span class="k">for</span> khaleesi-0.1.0
+Done installing documentation <span class="k">for</span> khaleesi after <span class="m">0</span> seconds
+<span class="m">1</span> gem installed
 </pre>
 </td></tr></table></div>
-<p>All of Khaleesi’s gem dependencies are automatically installed by the above command, so you won&#39;t have to worry about them at all.</p>
+<h2 id="install-with-source">Install with Source</h2>
 
-<p>The installation process will add one new command to your environment, with 5+ useful features :</p>
+<p>The another way to install is packing the <code>gems</code> file yourself then install locally.</p>
+<div class="highlight bash"><table><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></td><td><pre>~ <span class="nv">$ </span>git clone https://github.com/vince-styling/khaleesi.git
+~ <span class="nv">$ </span><span class="nb">cd </span>khaleesi
+~ <span class="nv">$ </span>gem build khaleesi.gemspec
+~ <span class="nv">$ </span>gem install khaleesi-0.1.0.gem
+Successfully installed khaleesi-0.1.0
+Parsing documentation <span class="k">for</span> khaleesi-0.1.0
+Installing ri documentation <span class="k">for</span> khaleesi-0.1.0
+Done installing documentation <span class="k">for</span> khaleesi after <span class="m">0</span> seconds
+<span class="m">1</span> gem installed
+
+<span class="c"># If the &quot;khaleesi&quot; command is available, means the install successfully.</span>
+~ <span class="nv">$ </span>khaleesi about
+Khaleesi is a static site generator write in Ruby.
+site : http://khaleesi.vincestyling.com/.
+author : vince styling.
+version : 0.1.0.
+</pre>
+</td></tr></table></div>
+<p>All of Khaleesi’s gem dependencies are automatically installed, so you won&#39;t have to worry about them at all.</p>
+
+<p>By the way, throughout the Installing may takes a relatively long time. In my experience, it often consumes 10 minutes at least where i&#39;m living for. I think the part it spends so much time is <strong>connecting</strong> to the RubyGems.org and <strong>verifying</strong> our account. But who know, it just make us waiting and nothing to be done, so be patient with this.</p>
+
+<p>After you&#39;ve got everything installed, you&#39;ll able to execute a new command with 5+ useful options in the Terminal :</p>
 
 <ul>
 <li>khaleesi produce</li>
@@ -576,9 +624,7 @@
 <li>khaleesi build</li>
 </ul>
 
-<p>The uses of each of these commands will be covered below.</p>
-
-<p>Now that you&#39;ve got everything installed, let&#39;s get to work!</p>
+<p>These commands will be covered below.</p>
 
 <h1 id="quick-start-guide">Quick-start Guide</h1>
 
