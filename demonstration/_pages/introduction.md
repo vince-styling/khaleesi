@@ -32,7 +32,31 @@ Mac OS X comes prepackaged with both Ruby and RubyGems after you installed Comma
 Once you have Ruby and RubyGems up, you are ready to install Khaleesi. At the terminal prompt, you can simply run the following command to install :
 
 ```bash
-[sudo] gem install khaleesi
+~ $ [sudo] gem install khaleesi
+```
+
+## Install with Source
+
+Throughout the Installing might takes times, in my experience, it often consumed 10 minutes at least where i'm live. I think the part its spents so much time is connecting to the RubyGems.org and verifying our account, but who know, it just make us waiting and nothing to be done.
+So there another way to install is pack the `gem` yourself then install locally.
+
+```bash
+~ $ git clone https://github.com/vince-styling/khaleesi.git
+~ $ cd khaleesi
+~ $ gem build khaleesi.gemspec
+~ $ gem install khaleesi-0.0.1.gem
+Successfully installed khaleesi-0.0.1
+Parsing documentation for khaleesi-0.0.1
+Installing ri documentation for khaleesi-0.0.1
+Done installing documentation for khaleesi after 0 seconds
+1 gem installed
+
+# If the "khaleesi" is available, means the install successfully.
+~ $ khaleesi about
+Khaleesi is a static site generator write in Ruby.
+site : http://khaleesi.vincestyling.com/.
+author : vince styling.
+version : 0.0.1.
 ```
 
 All of Khaleesi’s gem dependencies are automatically installed by the above command, so you won't have to worry about them at all.
@@ -45,7 +69,7 @@ The installation process will add one new command to your environment, with 5+ u
 - khaleesi generate
 - khaleesi build
 
-The uses of each of these commands will be covered below.
+These commands will be covered below.
 
 Now that you've got everything installed, let's get to work!
 
