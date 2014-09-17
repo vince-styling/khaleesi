@@ -908,38 +908,34 @@ usage: khaleesi generate <span class="o">[</span>options...<span class="o">]</sp
 36
 37
 38
-39
-40
-41</pre></td><td><pre><span class="c">#!/bin/bash</span>
+39</pre></td><td><pre><span class="c">#!/bin/bash</span>
 
-<span class="nv">src_dir</span><span class="o">=</span>~/dev/khaleesi/demonstration
-<span class="nv">dest_dir</span><span class="o">=</span>~/dev/khaleesi/demonstration/site
+<span class="nv">prj_dir</span><span class="o">=</span>~/dev/khaleesi
+<span class="nv">src_dir</span><span class="o">=</span><span class="nv">$prj_dir</span>/demonstration
+<span class="nv">dest_dir</span><span class="o">=</span><span class="nv">$src_dir</span>/site
 <span class="nv">line_numbers</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
 <span class="nv">css_class</span><span class="o">=</span><span class="s2">&quot;highlight&quot;</span>
 <span class="nv">time_pattern</span><span class="o">=</span><span class="s2">&quot;%Y-%m-%d %H:%M&quot;</span>
 <span class="nv">date_pattern</span><span class="o">=</span><span class="s2">&quot;%F&quot;</span>
-<span class="nv">highlighter</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
-<span class="c"># highlighter=&quot;pygments&quot;</span>
 <span class="nv">toc_selection</span><span class="o">=</span><span class="s2">&quot;h1,h2&quot;</span>
-<span class="c"># toc_selection=&quot;h1,h2[unique]&quot;</span>
 
 <span class="k">if</span> <span class="o">[[</span> <span class="s2">&quot;$1&quot;</span> <span class="o">==</span> <span class="s2">&quot;generate&quot;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
   <span class="nv">diff</span><span class="o">=</span><span class="k">$(</span><span class="o">[</span> <span class="s2">&quot;$2&quot;</span> <span class="o">==</span> <span class="s1">&#39;diff&#39;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;true&quot;</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&quot;false&quot;</span><span class="k">)</span>
   khaleesi generate --src-dir <span class="s2">&quot;$src_dir&quot;</span> --dest-dir <span class="s2">&quot;$dest_dir&quot;</span> --line-numbers <span class="nv">$line_numbers</span> <span class="se">\</span>
     --css-class <span class="nv">$css_class</span> --time-pattern <span class="s2">&quot;$time_pattern&quot;</span> --date-pattern <span class="s2">&quot;$date_pattern&quot;</span> <span class="se">\</span>
-    --diff-plus <span class="s2">&quot;$diff&quot;</span> --highlighter <span class="s2">&quot;$highlighter&quot;</span> --toc-selection <span class="s2">&quot;$toc_selection&quot;</span>
+    --diff-plus <span class="s2">&quot;$diff&quot;</span> --toc-selection <span class="s2">&quot;$toc_selection&quot;</span>
 
 <span class="k">elif</span> <span class="o">[[</span> <span class="s2">&quot;$1&quot;</span> <span class="o">==</span> <span class="s2">&quot;build&quot;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
   <span class="nv">temperary_dest_dir</span><span class="o">=</span>~/tmp_site
   mkdir <span class="nv">$temperary_dest_dir</span>
 
-  <span class="nb">cd</span> <span class="nv">$src_dir</span>
+  <span class="nb">cd</span> <span class="nv">$prj_dir</span>
 
   git checkout master
 
-  khaleesi build --src-dir <span class="s2">&quot;$src_dir&quot;</span> --dest-dir <span class="s2">&quot;$temperary_dest_dir&quot;</span> --line-numbers <span class="nv">$line_numbers</span> <span class="se">\</span>
-    --css-class <span class="nv">$css_class</span> --time-pattern <span class="s2">&quot;$time_pattern&quot;</span> --date-pattern <span class="s2">&quot;$date_pattern&quot;</span> <span class="se">\</span>
-    --highlighter <span class="s2">&quot;$highlighter&quot;</span> --toc-selection <span class="s2">&quot;$toc_selection&quot;</span>
+  khaleesi build --src-dir <span class="s2">&quot;$src_dir&quot;</span> --dest-dir <span class="s2">&quot;$temperary_dest_dir&quot;</span> <span class="se">\</span>
+    --line-numbers <span class="nv">$line_numbers</span> --css-class <span class="nv">$css_class</span> --time-pattern <span class="s2">&quot;$time_pattern&quot;</span> <span class="se">\</span>
+    --date-pattern <span class="s2">&quot;$date_pattern&quot;</span> --highlighter pygments --toc-selection <span class="s2">&quot;$toc_selection&quot;</span>
 
   git checkout gh-pages
 
