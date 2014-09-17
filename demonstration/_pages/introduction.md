@@ -32,36 +32,42 @@ Mac OS X comes prepackaged with both Ruby and RubyGems after you installed Comma
 Once you have Ruby and RubyGems up, you are ready to install Khaleesi. At the terminal prompt, you can simply run the following command to install :
 
 ```bash
-~ $ [sudo] gem install khaleesi
+~ $ gem install khaleesi
+Successfully installed khaleesi-0.1.0
+Parsing documentation for khaleesi-0.1.0
+Installing ri documentation for khaleesi-0.1.0
+Done installing documentation for khaleesi after 0 seconds
+1 gem installed
 ```
 
 ## Install with Source
 
-Throughout the Installing might takes times, in my experience, it often consumed 10 minutes at least where i'm live. I think the part its spents so much time is connecting to the RubyGems.org and verifying our account, but who know, it just make us waiting and nothing to be done.
-So there another way to install is pack the `gem` yourself then install locally.
+The another way to install is packing the `gems` file yourself then install locally.
 
 ```bash
 ~ $ git clone https://github.com/vince-styling/khaleesi.git
 ~ $ cd khaleesi
 ~ $ gem build khaleesi.gemspec
-~ $ gem install khaleesi-0.0.1.gem
-Successfully installed khaleesi-0.0.1
-Parsing documentation for khaleesi-0.0.1
-Installing ri documentation for khaleesi-0.0.1
+~ $ gem install khaleesi-0.1.0.gem
+Successfully installed khaleesi-0.1.0
+Parsing documentation for khaleesi-0.1.0
+Installing ri documentation for khaleesi-0.1.0
 Done installing documentation for khaleesi after 0 seconds
 1 gem installed
 
-# If the "khaleesi" is available, means the install successfully.
+# If the "khaleesi" command is available, means the install successfully.
 ~ $ khaleesi about
 Khaleesi is a static site generator write in Ruby.
 site : http://khaleesi.vincestyling.com/.
 author : vince styling.
-version : 0.0.1.
+version : 0.1.0.
 ```
 
-All of Khaleesi’s gem dependencies are automatically installed by the above command, so you won't have to worry about them at all.
+All of Khaleesi’s gem dependencies are automatically installed, so you won't have to worry about them at all.
 
-The installation process will add one new command to your environment, with 5+ useful features :
+By the way, throughout the Installing may takes a relatively long time. In my experience, it often consumes 10 minutes at least where i'm living for. I think the part it spends so much time is **connecting** to the RubyGems.org and **verifying** our account. But who know, it just make us waiting and nothing to be done, so be patient with this.
+
+After you've got everything installed, you'll able to execute a new command with 5+ useful options in the Terminal :
 
 - khaleesi produce
 - khaleesi construction
@@ -70,9 +76,6 @@ The installation process will add one new command to your environment, with 5+ u
 - khaleesi build
 
 These commands will be covered below.
-
-Now that you've got everything installed, let's get to work!
-
 
 
 
