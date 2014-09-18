@@ -16,6 +16,7 @@ $(function() {
 
     $(window).scroll(function(){
         $(context).css({'top':10});
+        $('a.back_top').css({'bottom':10});
     });
 
     $(context + 'div#btn').click(function(){
