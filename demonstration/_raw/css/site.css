@@ -224,6 +224,12 @@ a:hover {
     padding: 0 0;
 }
 
+.back_top {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}
+
 .toc_container {
     position: fixed;
     top: 10px;
