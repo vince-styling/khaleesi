@@ -683,17 +683,7 @@ Ruby and Python was the famous programming languages either. At the beginning, i
 
 ## Why choose Khaleesi as project name?
 
-"Khaleesi" is a Dothraki title referring to the wife of the khal in the Great Grass Sea, she could be very influential in the whole khalasar. This word inspired from my favorite books **A song of ice and fire** where the story coming from. According to the **Game of Thrones** TV, "Khaleesi" is pronounced "khal-EE-see". Play the role of her actor was quite beautiful and charming, she was my favorite character than the others, that's why we chose this name.
-
-
-
-
-
-
-
-
-
-
+"Khaleesi" is a word invented by author George R.R. Martin for his wildly popular "Game of Thrones" series, means **queen** in the fictional Dothraki language. According to the **Game of Thrones** TV, "Khaleesi" is pronounced "khal-EE-see". Parents naming their baby girl Khaleesi has growing popularity in recent years even if that is a royal title not a name. This title refered to character Daenerys Targaryen in the TV, she receives the title when she marries Khal Drogo the horselord of Dothraki. Play the role of her actor was quite beautiful and charming, she was my favorite character, that's why i chose this name.
 
 
 
