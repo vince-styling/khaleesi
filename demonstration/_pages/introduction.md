@@ -13,25 +13,30 @@ Getting Khaleesi installed and ready-to-go should only take a few minutes, it's 
 
 Installing Khaleesi is easy and straightforward, but there are a few requirements you'll need to make sure your system has before you start.
 
-- Ruby (>= 2.1.2)
-- RubyGems (>= 2.2.2)
+- Ruby (>= 2.0.0)
+- RubyGems (>= 2.0.14.1)
 - Linux, Unix, or Mac OS X(seemed not support Windows)
 
 Mac OS X comes prepackaged with both Ruby and RubyGems after you installed Command Line Tools for Xcode. However, both Khaleesi requires might be old, below is what versions i'm developing on :
 
 ```bash
-# => make sure the ruby version >= 2.1.2
-~ $ /usr/bin/ruby --version
+# => make sure the ruby version >= 2.0.0
+~ $ ruby --version
+ruby 2.0.0p648 (2015-12-16 revision 53162) [universal.x86_64-darwin15]
 
-# => make sure the RubyGems version >= 2.2.2
-~ $ /usr/bin/gem --version
+# => make sure the RubyGems version >= 2.0.14.1
+~ $ gem --version
+2.0.14.1
 ```
 
 ## Install with RubyGems
 
-Once you have Ruby and RubyGems up, you are ready to install Khaleesi. At the terminal prompt, you can simply run the following command to install :
+Once you have Ruby and RubyGems up, you are ready to install Khaleesi. At the terminal prompt, you can simply run the following commands to install, the last command is install Khaleesi, and the rest are install dependencies :
 
 ```bash
+~ $ gem install redcarpet
+~ $ gem install pygments.rb
+~ $ gem install rouge
 ~ $ gem install khaleesi
 Successfully installed khaleesi-0.1.0
 Parsing documentation for khaleesi-0.1.0
