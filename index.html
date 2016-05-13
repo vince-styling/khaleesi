@@ -541,8 +541,8 @@
 <p>Installing Khaleesi is easy and straightforward, but there are a few requirements you&#39;ll need to make sure your system has before you start.</p>
 
 <ul>
-<li>Ruby (&gt;= 2.1.2)</li>
-<li>RubyGems (&gt;= 2.2.2)</li>
+<li>Ruby (&gt;= 2.0.0)</li>
+<li>RubyGems (&gt;= 2.0.14.1)</li>
 <li>Linux, Unix, or Mac OS X(seemed not support Windows)</li>
 </ul>
 
@@ -551,22 +551,32 @@
 2
 3
 4
-5</pre></td><td><pre><span class="c"># =&gt; make sure the ruby version &gt;= 2.1.2</span>
-~ <span class="nv">$ </span>/usr/bin/ruby --version
+5
+6
+7</pre></td><td><pre><span class="c"># =&gt; make sure the ruby version &gt;= 2.0.0</span>
+~ <span class="nv">$ </span>ruby --version
+ruby 2.0.0p648 <span class="o">(</span>2015-12-16 revision 53162<span class="o">)</span> <span class="o">[</span>universal.x86_64-darwin15<span class="o">]</span>
 
-<span class="c"># =&gt; make sure the RubyGems version &gt;= 2.2.2</span>
-~ <span class="nv">$ </span>/usr/bin/gem --version
+<span class="c"># =&gt; make sure the RubyGems version &gt;= 2.0.14.1</span>
+~ <span class="nv">$ </span>gem --version
+2.0.14.1
 </pre>
 </td></tr></table></div>
 <h2 id="install-with-rubygems">Install with RubyGems</h2>
 
-<p>Once you have Ruby and RubyGems up, you are ready to install Khaleesi. At the terminal prompt, you can simply run the following command to install :</p>
+<p>Once you have Ruby and RubyGems up, you are ready to install Khaleesi. At the terminal prompt, you can simply run the following commands to install, the last command is install Khaleesi, and the rest are install dependencies :</p>
 <div class="highlight bash"><table><tr><td class="linenos"><pre>1
 2
 3
 4
 5
-6</pre></td><td><pre>~ <span class="nv">$ </span>gem install khaleesi
+6
+7
+8
+9</pre></td><td><pre>~ <span class="nv">$ </span>gem install redcarpet
+~ <span class="nv">$ </span>gem install pygments.rb
+~ <span class="nv">$ </span>gem install rouge
+~ <span class="nv">$ </span>gem install khaleesi
 Successfully installed khaleesi-0.1.0
 Parsing documentation <span class="k">for</span> khaleesi-0.1.0
 Installing ri documentation <span class="k">for</span> khaleesi-0.1.0
